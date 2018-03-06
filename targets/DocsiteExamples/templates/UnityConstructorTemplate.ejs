@@ -1,0 +1,19 @@
+<%
+if (propertyInfo.jsontype === "Object") {
+var exampleDatatype = allDataTypes[propertyInfo.actualtype];
+if (!exampleDatatype || !exampleObj) throw "Can't build example not found: " + JSON.stringify(propertyInfo) + ", " + JSON.stringify(exampleDatatype) + ", " + JSON.stringify(exampleObj);
+%><%- tabbing %>{<% tabbing = "    " + tabbing; %>
+<% for (var propName in exampleObj) { %>"<%- propName %>" = <%-
+unityConstructorTemplate({
+    allDataTypes: allDataTypes,
+    findProp: findProp,
+    propertyInfo: findProp(exampleDatatype.properties, propName),
+    exampleObj: exampleObj[propName],
+    tabbing: tabbing,
+    unityConstructorTemplate: unityConstructorTemplate
+})
+%>;
+<% } // end for (var propName in exampleObj)
+%><%- tabbing %>};<% } else {%>
+Unhandled: <%- JSON.stringify(propertyInfo) %>
+<%} %>

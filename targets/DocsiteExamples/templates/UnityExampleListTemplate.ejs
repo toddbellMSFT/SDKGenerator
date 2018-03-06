@@ -1,0 +1,13 @@
+<%
+for (var c = 0; c < api.calls.length; c++) {
+var exampleDatatype = api.datatypes[api.calls[c].request];
+%> var request = <%- unityConstructorTemplate({
+    allDataTypes: api.datatypes,
+    findProp: findProp,
+    propertyInfo: { jsontype: "Object", actualtype: api.calls[c].request },
+    exampleObj: JSON.parse(api.calls[c].requestExample),
+    tabbing: "",
+    unityConstructorTemplate: unityConstructorTemplate
+}) %>;
+
+<% } %>

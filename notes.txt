@@ -1,0 +1,43 @@
+propertyInfo = {
+    "name": "originalRequest",
+    "description": "request description.",
+    "jsontype": "Object",
+    "actualtype": "AcceptTradeRequest"
+}
+
+exampleObj = json.parse("{\r\n  \"OfferingPlayerId\": \"CD803BF233CE76CC\",\r\n  \"TradeId\": \"D819CEC225EA9948C351\",\r\n  \"AcceptedInventoryInstanceIds\": [\r\n    \"95C1797ADDAC24DC0383\",\r\n    \"0F7793DF55CCEAF21B84\"\r\n  ]\r\n}")
+
+exampleDatatype = {
+  "name": "AcceptTradeRequest",
+  "className": "AcceptTradeRequest",
+  "classNameSpace": "PlayFab.Client.Models",
+  "assembly": "PlayFab.Client.Models",
+  "properties": [
+    {
+      "name": "AcceptedInventoryInstanceIds",
+      "description": "Items from the accepting player's inventory in exchange for the offered items in the trade. In the case of a gift, this will be null.",
+      "collection": "array",
+      "jsontype": "String",
+      "actualtype": "String",
+      "optional": true
+    },
+    {
+      "name": "OfferingPlayerId",
+      "description": "Player who opened the trade.",
+      "jsontype": "String",
+      "actualtype": "String",
+      "optional": false
+    },
+    {
+      "name": "TradeId",
+      "description": "Trade identifier.",
+      "jsontype": "String",
+      "actualtype": "String",
+      "optional": false
+    }
+  ]
+}
+
+tabbing = ""
+
+UnityConstructorTemplate

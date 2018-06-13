@@ -48,9 +48,9 @@ exports.makeCombinedAPI = function (apis, sourceDir, apiOutputDir) {
 function getBaseTypeSyntax(datatype) {
     var parents = [];
 
-    if (datatype.className.toLowerCase().endsWith("request"))
+    if (datatype.isRequest)
         parents.push("PlayFabRequestCommon");
-    if (datatype.className.toLowerCase().endsWith("response") || datatype.className.toLowerCase().endsWith("result"))
+    if (datatype.isResult)
         parents.push("PlayFabResultCommon");
     if (datatype.sortKey)
         parents.push("IComparable<" + datatype.name + ">");

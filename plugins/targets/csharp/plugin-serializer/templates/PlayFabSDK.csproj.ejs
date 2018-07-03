@@ -34,21 +34,38 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="source\IPlayFabPlugin.cs" />
-    <Compile Include="source\ISerializerPlugin.cs" />
-    <Compile Include="source\ITransportPlugin.cs" />
-    <Compile Include="source\PluginContract.cs" />
-    <Compile Include="source\PluginManager.cs" />  
-    <Compile Include="source\Json\ISerializer.cs" />
-    <Compile Include="source\Json\NewtonsoftWrapper.cs" />
-    <Compile Include="source\Json\SimpleJson.cs" />
-    <Compile Include="source\PlayFabCommon.cs" />
-    <Compile Include="source\PlayFabErrors.cs" />
+    <Compile Include="..\..\..\pf-common\csharp\<%- outputSubDir %>\source\IPlayFabSender.cs">
+      <Link>dependencies\pf-common\source\IPlayFabSender.cs</Link>
+    </Compile>
+    <Compile Include="..\..\..\pf-common\csharp\<%- outputSubDir %>\source\Json\ISerializer.cs">
+      <Link>dependencies\pf-common\source\Json\ISerializer.cs</Link>
+    </Compile>
+    <Compile Include="..\..\..\pf-common\csharp\<%- outputSubDir %>\source\Json\NewtonsoftWrapper.cs">
+      <Link>dependencies\pf-common\source\Json\NewtonsoftWrapper.cs</Link>
+    </Compile>
+    <Compile Include="..\..\..\pf-common\csharp\<%- outputSubDir %>\source\Json\SimpleJson.cs">
+      <Link>dependencies\pf-common\source\Json\SimpleJson.cs</Link>
+    </Compile>
+    <Compile Include="..\..\..\pf-common\csharp\<%- outputSubDir %>\source\PlayFabCommon.cs">
+      <Link>dependencies\pf-common\source\PlayFabCommon.cs</Link>
+    </Compile>
+    <Compile Include="..\..\..\pf-common\csharp\<%- outputSubDir %>\source\PlayFabErrors.cs">
+      <Link>dependencies\pf-common\source\PlayFabErrors.cs</Link>
+    </Compile>
+    <Compile Include="..\..\..\pf-common\csharp\<%- outputSubDir %>\source\PlayFabFileUtil.cs">
+      <Link>dependencies\pf-common\source\PlayFabFileUtil.cs</Link>
+    </Compile>
+    <Compile Include="..\..\..\pf-common\csharp\<%- outputSubDir %>\source\PlayFabSettings.cs">
+      <Link>dependencies\pf-common\source\PlayFabSettings.cs</Link>
+    </Compile>
+    <Compile Include="..\..\..\pf-common\csharp\<%- outputSubDir %>\source\PlayFabUtil.cs">
+      <Link>dependencies\pf-common\source\PlayFabUtil.cs</Link>
+    </Compile>
+    <Compile Include="..\..\..\pf-common\csharp\<%- outputSubDir %>\source\WsaReflectionExtensions.cs">
+      <Link>dependencies\pf-common\source\WsaReflectionExtensions.cs</Link>
+    </Compile>
+    <Compile Include="source\PlayFabSerializer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="source\PlayFabSettings.cs" />
-    <Compile Include="source\PlayFabFileUtil.cs" />
-    <Compile Include="source\PlayFabUtil.cs" />
-    <Compile Include="source\WsaReflectionExtensions.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Portable\$(TargetFrameworkVersion)\Microsoft.Portable.CSharp.targets" />
 </Project>

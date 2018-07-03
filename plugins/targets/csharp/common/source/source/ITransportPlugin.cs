@@ -4,9 +4,9 @@ using System.Threading.Tasks;
 namespace PlayFab
 {
     /// <summary>
-    /// The interface that any PlayFab-compliant transport needs to implement.
+    /// Interface of any transport SDK plugin.
     /// </summary>
-    public interface IPlayFabSender
+    public interface ITransportPlugin: IPlayFabPlugin
     {
         Task<object> DoPost(string urlPath, PlayFabRequestCommon request, string authType, string authKey, Dictionary<string, string> extraHeaders);
     }

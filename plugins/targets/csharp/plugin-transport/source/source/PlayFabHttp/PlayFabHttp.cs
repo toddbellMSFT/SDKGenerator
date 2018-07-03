@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 
 namespace PlayFab.Internal
 {
-    public class PlayFabHttp : IPlayFabSender
+    public class PlayFabHttp : ITransportPlugin
     {
         private readonly IPlayFabHttp _http;
 

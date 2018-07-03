@@ -1,0 +1,9 @@
+{
+    "id": "420934FE-D72D-4B32-B753-B1E6E724F748",
+    "alias": "plugin-api",
+    "targets": [
+        {
+            "name": "csharp"
+        }
+    ]
+}

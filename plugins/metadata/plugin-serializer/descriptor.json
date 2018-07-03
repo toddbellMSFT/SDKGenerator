@@ -1,0 +1,9 @@
+{
+    "id": "7CF331DA-E4C8-4F14-BC34-FAF6AD566F05",
+    "alias": "plugin-serializer",
+    "targets": [
+        {
+            "name": "csharp"
+        }
+    ]
+}

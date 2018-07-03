@@ -1,0 +1,9 @@
+{
+    "id": "830EB9E2-679E-4D1A-9116-1121A95D3357",
+    "alias": "plugin-transport",
+    "targets": [
+        {
+            "name": "csharp"
+        }
+    ]
+}

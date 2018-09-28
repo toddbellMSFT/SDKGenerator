@@ -10,7 +10,26 @@
 @implementation PlayFab<%- api.name %>API
 
 +(NSString*) GetURL {
-return [NSString stringWithFormat:@"https://%@%@", [PlayFabSettings.VerticalName length] != 0 ? PlayFabSettings.VerticalName : PlayFabSettings.TitleId, PlayFabSettings.ProductionEnvironmentURL];
+
+// do a for loop over PlayFabSettings.RequestGetParams
+// add each key + value to a string
+var completeUrl = url; 
+        var getParams = PlayFab._internalSettings.requestGetParams; 
+        if (getParams != null) { 
+            var firstParam = true; 
+            for (var key in getParams) { 
+                if (firstParam) { 
+                    completeUrl += "?"; 
+                    firstParam = false; 
+                } else { 
+                    completeUrl += "&"; 
+                } 
+                completeUrl += key + "=" + getParams[key]; 
+            } 
+        } 
+
+// append that string to second %@ in stringWithFormat call
+return [NSString stringWithFormat:@"https://%@%@%@", [PlayFabSettings.VerticalName length] != 0 ? PlayFabSettings.VerticalName : PlayFabSettings.TitleId, PlayFabSettings.ProductionEnvironmentURL, @"sdk=Obj-C-" + PlayFabSettings.VersionNumber];
 }
 
 static PlayFabClientAPI* PlayFabInstance;

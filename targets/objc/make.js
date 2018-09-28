@@ -19,6 +19,7 @@ function makeApiInternal(api, sourceDir, apiOutputDir) {
         GetResultActions: GetResultActions,
         HasRequest: HasRequest,
         GetDefaultVerticalName: GetDefaultVerticalName,
+        SdkVersion: exports.sdkVersion,
     };
 
     GenerateModels([api], apiOutputDir, api.name, sourceDir, "");

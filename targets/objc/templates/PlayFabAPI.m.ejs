@@ -10,26 +10,23 @@
 @implementation PlayFab<%- api.name %>API
 
 +(NSString*) GetURL {
+    NSString * completeUrl = [NSString stringWithFormat:@"https://%@%@", [PlayFabSettings.VerticalName length] != 0 ? PlayFabSettings.VerticalName : PlayFabSettings.TitleId, PlayFabSettings.ProductionEnvironmentURL];
 
-// do a for loop over PlayFabSettings.RequestGetParams
-// add each key + value to a string
-var completeUrl = url; 
-        var getParams = PlayFab._internalSettings.requestGetParams; 
-        if (getParams != null) { 
-            var firstParam = true; 
-            for (var key in getParams) { 
-                if (firstParam) { 
-                    completeUrl += "?"; 
-                    firstParam = false; 
-                } else { 
-                    completeUrl += "&"; 
-                } 
-                completeUrl += key + "=" + getParams[key]; 
-            } 
-        } 
+    NSMutableDictionary * getParams = PlayFabSettings.RequestGetParams;
 
-// append that string to second %@ in stringWithFormat call
-return [NSString stringWithFormat:@"https://%@%@%@", [PlayFabSettings.VerticalName length] != 0 ? PlayFabSettings.VerticalName : PlayFabSettings.TitleId, PlayFabSettings.ProductionEnvironmentURL, @"sdk=Obj-C-" + PlayFabSettings.VersionNumber];
+    if (sizeof(getParams) != 0) {
+        bool firstParam = true;
+        for (id key in getParams) {
+            if (firstParam) {
+                [completeUrl appendString:@"?"];
+                firstParam = false;
+            } else { 
+                [completeUrl appendString:@"&"];
+            }
+            [completeUrl appendString:[NSString stringWithFormat:@"%@%@%@", key, @"=", [getParams objectForKey:key]]];
+        }
+    }
+    return completeUrl;
 }
 
 static PlayFabClientAPI* PlayFabInstance;

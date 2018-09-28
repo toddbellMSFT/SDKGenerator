@@ -20,7 +20,7 @@ FOUNDATION_EXPORT NSString *const AD_TYPE_ANDROID_ID;
 + (NSString *) AdvertisingIdType;  // Set this to the appropriate AD_TYPE_X constant above
 + (NSString *) AdvertisingIdValue;
 + (NSString *) VerticalName;
-+ (NSDictionary *) RequestGetParams;
++ (NSMutableDictionary *) RequestGetParams;
 
 + (void) setProductionEnvironmentURL:(NSString*)setValue;
 + (void) setTitleId:(NSString*)setValue;

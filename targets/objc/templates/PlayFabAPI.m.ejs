@@ -10,7 +10,7 @@
 @implementation PlayFab<%- api.name %>API
 
 +(NSString*) GetURL {
-    NSString * completeUrl = [NSString stringWithFormat:@"https://%@%@", [PlayFabSettings.VerticalName length] != 0 ? PlayFabSettings.VerticalName : PlayFabSettings.TitleId, PlayFabSettings.ProductionEnvironmentURL];
+    NSMutableString * completeUrl = [NSString stringWithFormat:@"https://%@%@", [PlayFabSettings.VerticalName length] != 0 ? PlayFabSettings.VerticalName : PlayFabSettings.TitleId, PlayFabSettings.ProductionEnvironmentURL];
 
     NSMutableDictionary * getParams = PlayFabSettings.RequestGetParams;
 

@@ -1,8 +1,9 @@
-using Octokit;
-using PlayFab.Json;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using JenkinsConsoleUtility.Util;
+using Octokit;
+using PlayFab.Json;
 
 namespace JenkinsConsoleUtility.Commands
 {
@@ -13,7 +14,7 @@ namespace JenkinsConsoleUtility.Commands
 
         // TODO: Validate this
         //private readonly Type[] _commandDependency = { typeof(VersionVarWriter) };
-        //public Type[] CommandDependency { get { return _commandDependency; } }
+        //public Type[] CommandDependency => _commandDependency;
         private readonly string[] _commandKeys = { "GitApi" };
         public string[] CommandKeys { get { return _commandKeys; } }
         private readonly string[] _mandatoryArgKeys = { "sdkName", "GITHUB_CREDENTIALS_FILE" };
@@ -40,12 +41,12 @@ namespace JenkinsConsoleUtility.Commands
                     return 1;
 
                 var sdkRepo = client.Repository.Get(GitOwner, sdkName).Result;
-                JenkinsConsoleUtility.FancyWriteToConsole(sdkRepo.CloneUrl, null, ConsoleColor.Green);
+                JcuUtil.FancyWriteToConsole(ConsoleColor.Green, sdkRepo.CloneUrl);
             }
             catch (AggregateException agEx)
             {
                 foreach (var e in agEx.InnerExceptions)
-                    JenkinsConsoleUtility.FancyWriteToConsole(e.ToString(), null, ConsoleColor.Red);
+                    JcuUtil.FancyWriteToConsole(ConsoleColor.Red, e.ToString());
                 return 1;
             }
 
@@ -76,7 +77,9 @@ namespace JenkinsConsoleUtility.Commands
 
         private class GitHubCredentials
         {
+#pragma warning disable 0649
             public string token;
+#pragma warning restore 0649
         }
 
         private class GitHubReleaseRequest : NewRelease

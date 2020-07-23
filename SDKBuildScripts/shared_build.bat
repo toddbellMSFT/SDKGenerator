@@ -16,23 +16,18 @@ if [%delSrc%] == [true] (
 )
 popd
 
-if [%apiSpecSource%] == [] (
+if ["%apiSpecSource%"] == [""] (
     set apiSpecSource=-apiSpecGitUrl
 )
 
 if defined NODE_NAME (
-    set buildIdentifier=-buildIdentifier JBuild_%SdkName%_%NODE_NAME%_%EXECUTOR_NUMBER%
+    set buildIdentifier=JBuild_%SdkName%_%NODE_NAME%_%EXECUTOR_NUMBER%
 )
 
 cd %~dp0
 pushd ..
-if [%1] == [] (
-    rem === BUILDING %SdkName% ===
-    node generate.js %targetSrc%=%destPath% %apiSpecSource% %SdkGenArgs% %buildIdentifier%
-) else (
-    rem === BUILDING %SdkName% with params %* ===
-    node generate.js %targetSrc%=%destPath% %*
-)
+rem === BUILDING %SdkName% with params %* ===
+node generate.js -destPath %destPath% %apiSpecSource% -buildIdentifier %buildIdentifier% %*
 popd
 
 pause

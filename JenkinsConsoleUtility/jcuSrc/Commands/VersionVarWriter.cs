@@ -1,8 +1,9 @@
-using PlayFab.Json;
 using System.Collections.Generic;
 using System.IO;
 using System.Net.Http;
 using System.Threading.Tasks;
+using JenkinsConsoleUtility.Util;
+using PlayFab.Json;
 
 namespace JenkinsConsoleUtility.Commands
 {
@@ -41,7 +42,7 @@ namespace JenkinsConsoleUtility.Commands
                 _apiSpecPfUrl = JenkinsConsoleUtility.GetArgVar(argsLc, "apiSpecPfUrl");
             else
             {
-                JenkinsConsoleUtility.FancyWriteToConsole("Api-Spec input not defined.  Please input one of: apiSpecPath, apiSpecGitUrl, apiSpecPfUrl");
+                JcuUtil.FancyWriteToConsole("Api-Spec input not defined.  Please input one of: apiSpecPath, apiSpecGitUrl, apiSpecPfUrl");
                 return 1;
             }
 
@@ -49,8 +50,8 @@ namespace JenkinsConsoleUtility.Commands
             var sdkNotes = JsonWrapper.DeserializeObject<SdkManualNotes>(versionJson);
             if (!sdkNotes.sdkVersion.TryGetValue(sdkGenKey, out sdkVersionString))
             {
-                JenkinsConsoleUtility.FancyWriteToConsole("SdkManualNotes.json does not contain: " + sdkGenKey);
-                JenkinsConsoleUtility.FancyWriteToConsole("SdkManualNotes.json:\n" + versionJson);
+                JcuUtil.FancyWriteToConsole("SdkManualNotes.json does not contain: " + sdkGenKey);
+                JcuUtil.FancyWriteToConsole("SdkManualNotes.json:\n" + versionJson);
                 return 1;
             }
 
@@ -65,8 +66,8 @@ namespace JenkinsConsoleUtility.Commands
                 {
                     outputFile.WriteLine("sdkVersion = " + sdkVersionString);
                     outputFile.WriteLine("sdkDate = " + date);
-                    JenkinsConsoleUtility.FancyWriteToConsole("sdkVersion = " + sdkVersionString);
-                    JenkinsConsoleUtility.FancyWriteToConsole("sdkDate = " + date);
+                    JcuUtil.FancyWriteToConsole("sdkVersion = " + sdkVersionString);
+                    JcuUtil.FancyWriteToConsole("sdkDate = " + date);
                 }
             }
             return 0;
@@ -116,19 +117,15 @@ namespace JenkinsConsoleUtility.Commands
                 // Single repo maps to mismatched foldername
                 case "actionscriptsdk": return "actionscript";
                 case "cocos2d-xsdk": return "cpp-cocos2dx";
-                case "javascriptsdk": return "javascript";
+                case "javascriptsdk": case "javascriptbetasdk": return "javascript";
                 case "objective_c_sdk": return "objc";
-                case "playfabgameserver": return "csharp-unity-gameserver";
                 // Multiple repos map to the same folder
                 case "csharpsdk": case "csharpbetasdk": case "csharppsnsdk": return "csharp";
                 case "nodesdk": case "nodebetasdk": return "js-node";
                 case "postmancollection": case "postmanbeta": return "postman";
                 case "unitysdk": case "unitypsn": case "unitybeta": case "unityeditorextensions": return "unity-v2";
-                case "unrealblueprintsdk": case "uebpbetasdk": case "uebppsnsdk": return "cpp-unreal";
-                case "unrealcppsdk": case "uecppbetasdk": case "uecpppsnsdk": return "cpp-ue4";
                 case "unrealmarketplaceplugin": case "uemkplbetasdk": case "uemkplpsnsdk": return "unrealmarketplaceplugin";
-                case "windowssdk": case "winbetasdk": case "winpsnsdk": return "windowssdk";
-                case "xplatcppsdk": case "xplatbetasdk": case "xplatpsnsdk": return "xplatcppsdk";
+                case "xplatcppsdk": case "xplatbetasdk": case "xplatcppsdk-private-switch": case "xplatcppsdk-private-ps4": case "xplatcppsdk-private-gdk": return "xplatcppsdk";
                 case "javasdk": case "javabetasdk": return "java";
                 case "pythonsdk": case "pythonbetasdk": return "pythonsdk";
 
@@ -184,9 +181,11 @@ namespace JenkinsConsoleUtility.Commands
         /// </summary>
         private class SdkManualNotes
         {
+#pragma warning disable 0649
             public string description;
             public Dictionary<string, string> sdkVersion;
             public Dictionary<string, string> links;
+#pragma warning restore 0649
         }
     }
 }

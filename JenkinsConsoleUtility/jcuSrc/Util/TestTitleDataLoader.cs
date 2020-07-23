@@ -1,8 +1,8 @@
-using PlayFab.Json;
-using PlayFab.UUnit;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using PlayFab.Json;
+using PlayFab.UUnit;
 
 namespace JenkinsConsoleUtility.Util
 {
@@ -15,22 +15,45 @@ namespace JenkinsConsoleUtility.Util
             if (testTitleData != null)
                 return testTitleData;
 
-            string filepath;
-            // If testTitleData path is provided, try to load the file
-            if (JenkinsConsoleUtility.TryGetArgVar(out filepath, argsLc, "testTitleData") && !string.IsNullOrEmpty(filepath))
-                _LoadTestTitleData(filepath);
-            // If PF_TEST_TITLE_DATA_JSON exists, get testTitleData path from it, and try to load the file
-            filepath = Environment.GetEnvironmentVariable("PF_TEST_TITLE_DATA_JSON");
-            if (!string.IsNullOrEmpty(filepath))
-                _LoadTestTitleData(filepath);
+            string workspacePath = "";
+            JenkinsConsoleUtility.TryGetArgVar(out workspacePath, argsLc, "WORKSPACE");
 
-            if (testTitleData == null)
+            string titleDataPath1 = "";
+            JenkinsConsoleUtility.TryGetArgVar(out titleDataPath1, argsLc, "testTitleData");
+
+            string titleDataPath2 = "";
+            JenkinsConsoleUtility.TryGetArgVar(out titleDataPath2, argsLc, "PF_TEST_TITLE_DATA_JSON");
+
+            // If testTitleData or PF_TEST_TITLE_DATA_JSON path is provided, save the path and try to load it
+            HashSet<string> validFilepaths = new HashSet<string>();
+            AddValidPath(validFilepaths, titleDataPath1, workspacePath);
+            AddValidPath(validFilepaths, titleDataPath2, workspacePath);
+
+            // Load the first file path that works
+            foreach (var validFilepath in validFilepaths)
             {
-                Console.WriteLine("ERROR: Must use testTitleData");
-                throw new Exception("ERROR: Must use testTitleData");
+                _LoadTestTitleData(validFilepath);
+                if (testTitleData != null)
+                    return testTitleData;
             }
 
-            return testTitleData;
+            JcuUtil.FancyWriteToConsole(ConsoleColor.Red, "ERROR: Could not load testTitleData.",
+                ConsoleColor.Yellow, "WORKSPACE=", ConsoleColor.White, workspacePath,
+                ConsoleColor.Yellow, "testTitleData=", ConsoleColor.White, titleDataPath1,
+                ConsoleColor.Yellow, "PF_TEST_TITLE_DATA_JSON=", ConsoleColor.White, titleDataPath2,
+                ConsoleColor.Yellow, "validFilepaths=", ConsoleColor.White, validFilepaths);
+
+            return null;
+        }
+
+        private static void AddValidPath(HashSet<string> validFilepaths, string eachFilepath, string workspacePath)
+        {
+            if (string.IsNullOrEmpty(eachFilepath))
+                return;
+            if (!File.Exists(eachFilepath))
+                eachFilepath = eachFilepath.Replace("%WORKSPACE%", workspacePath).Replace("%workspace%", workspacePath);
+            if (File.Exists(eachFilepath))
+                validFilepaths.Add(eachFilepath);
         }
 
         private static void _LoadTestTitleData(string filepath)

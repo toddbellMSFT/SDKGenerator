@@ -1,3 +1,9 @@
+# PlayFab files
+**/*[Tt]estTitleData.json*
+**/beta_*.bat
+**/beta_*.sh
+
+# Various editor/tool temporary folders
 **/bin/
 **/obj/
 **/.idea/
@@ -5,6 +11,10 @@
 **/.vs/
 **/node_modules/
 
+# Mac temp files
+**/.DS_Store*
+
+# Various editor/tool temporary folders
 .project
 .classpath
 *.suo
@@ -12,3 +22,4 @@
 *.dat
 *.tmp
 *.js.map
+.leu

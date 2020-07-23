@@ -1,3 +1,7 @@
+/// <reference path="node.d.ts"/>
+/// <reference path="generate-plugins.ts"/>
+/// <reference path="generate-sdk.ts"/>
+
 var ejs = require("ejs");
 var fs = require("fs");
 var https = require("https");
@@ -5,26 +9,50 @@ var path = require("path");
 
 ejs.delimiter = "\n";
 
-interface SpecializationTocRef {
+// This is the interface for an internal object withing SdkGenerator, specifically
+// all the information needed to build an SDK from a template to a desination, with all flags and inputs
+interface IBuildTarget {
+    buildFlags: string[], // The flags applied to this build
+    destPath: string, // The path to the destination (usually a git repo)
+    templateFolder: string, // The SdkGenerator/(targets|privateTemplates)/<templateFolder>
+    targetMaker: any, // Once loaded, this is the make.js file which executes the SDK Generation
+    versionKey: string, // The key in the API_Specs/SdkManualNotes.json file that has the version for this SDK
+    versionString: string, // The actual version string, from SdkManualNotes, or from another appropriate input
+}
+
+interface IGenConfigFile { [key: string]: IGenConfig; }
+
+// This is the interface of the genConfig.json file at the root of the destination repo
+interface IGenConfig {
+    branchSpecMap: { [key: string]: string; }, // Theoretical. Indicates which apiSpec location is used for which branch. May be revised.
+    delSrc: boolean, // Theoretical. Determines if it is safe to delete template files. TODO: This should probably be a list of safe-to-delete file extensions.
+    buildFlags: string, // Active. Examples: "beta", "nonnullable", "beta nonnullable"
+    outputDirs: string[], // Theoretical. List of destination subdirectories to provide to make.js for duplicate generated copies
+    templateFolder: string, // Active. SDKGenerator/(targets|privateTemplates)/<templateFolder> which contains make.js for this SDK target
+    versionKey: string, // Active. The key to read from SdkManualNotes.json, to determine the version number. (use versionKey or versionString, not both)
+    versionString: string, // Active. The version number to apply to the SDK. (use versionKey or versionString, not both)
+}
+
+// This describes which API documents are provided to which implemented methods in the make.js file in the templates
+interface ISdkDoc {
+    funcName: string; // SDKGenerator/(targets|privateTemplates)/<templateFolder>/make.js/exports.<funcName>
+    apiDocKeys: string[]; // List of API document keys, indicating documents to provide to funcName
+}
+
+interface ISdkGenGlobals {
+    // Internal note: We lowercase the argsByName-keys, targetNames, buildIdentifier, and the flags.  Case is maintained for all other argsByName-values, and build-target
+    argsByName: { [key: string]: string; }; // Command line args compiled into KVP's
+    errorMessages: string[]; // String list of errors during parsing and loading steps
+    buildTarget: IBuildTarget; // Describes where and how to build the target
+    apiTemplateDescription: string; // Assigned if/when the api-spec template is fetched properly
+    apiCache: { [key: string]: any; } // We have to pre-cache the api-spec files, because latter steps (like ejs) can't run asynchronously
+    sdkDocsByMethodName: { [key: string]: ISdkDoc; } // When loading TOC, match documents to the SdkGen function that should be called for those docs
+    specialization: string;
+}
+
+interface ISpecializationTocRef {
     name: string;
     path: string;
-}
-
-interface SdkDoc {
-    funcName: string;
-    apiDocKeys: string[];
-}
-
-interface SdkGenGlobals {
-    argsByName: any;
-    errorMessages: string[];
-    targetOutputPathList: any[];
-    buildFlags: string[];
-    apiSrcDescription: string;
-    apiCache: { [key: string]: any; }
-    sdkDocsByMethodName: { [key: string]: SdkDoc; }
-    specialization: string;
-    unitySubfolder: string;
 }
 
 const defaultApiSpecFilePath = "../API_Specs"; // Relative path to Generate.js
@@ -36,19 +64,22 @@ const specializationTocCacheKey = "specializationTOC";
 const defaultSpecialization = "sdk";
 
 
-var sdkGeneratorGlobals: SdkGenGlobals = {
+var sdkGeneratorGlobals: ISdkGenGlobals = {
     // Frequently, these are passed by reference to avoid over-use of global variables. Unfortunately, the async nature of loading api files required some global references
-
-    // Internal note: We lowercase the argsByName-keys, targetNames, buildIdentifier, and the flags.  Case is maintained for all other argsByName-values, and targets
-    argsByName: {}, // Command line args compiled into KVP's
-    errorMessages: [], // String list of errors during parsing and loading steps
-    targetOutputPathList: [], // A list of objects that describe sdk targets to build
-    buildFlags: [], // The sdkBuildFlags which modify the list of APIs available in this build of the SDK
-    apiSrcDescription: "INVALID", // Assigned if/when the api-spec source is fetched properly
-    apiCache: {}, // We have to pre-cache the api-spec files, because latter steps (like ejs) can't run asynchronously
-    sdkDocsByMethodName: {}, // When loading TOC, match documents to the SdkGen function that should be called for those docs
-    specialization: defaultSpecialization,
-    unitySubfolder: null
+    argsByName: {},
+    errorMessages: [],
+    buildTarget: {
+        buildFlags: [],
+        destPath: null,
+        templateFolder: null,
+        targetMaker: null,
+        versionKey: null,
+        versionString: null,
+    },
+    apiTemplateDescription: "INVALID",
+    apiCache: {},
+    sdkDocsByMethodName: {},
+    specialization: defaultSpecialization
 };
 global.sdkGeneratorGlobals = sdkGeneratorGlobals;
 
@@ -59,7 +90,7 @@ function parseAndLoadApis() {
     console.log("My args:" + process.argv.join(" "));
 
     // Step 1
-    parseCommandInputs(process.argv, sdkGeneratorGlobals.argsByName, sdkGeneratorGlobals.errorMessages, sdkGeneratorGlobals.targetOutputPathList);
+    parseCommandInputs(process.argv, sdkGeneratorGlobals.argsByName, sdkGeneratorGlobals.errorMessages, sdkGeneratorGlobals.buildTarget);
     reportErrorsAndExit(sdkGeneratorGlobals.errorMessages);
 
     // Kick off Step 2
@@ -72,7 +103,7 @@ function generateSdks() {
         specializationContent["initializeSpecialization"](sdkGeneratorGlobals.apiCache[specializationTocCacheKey]);
     }
 
-    generateApis(sdkGeneratorGlobals.argsByName["buildidentifier"], sdkGeneratorGlobals.targetOutputPathList, sdkGeneratorGlobals.buildFlags, sdkGeneratorGlobals.apiSrcDescription);
+    generateApis(sdkGeneratorGlobals.argsByName["buildidentifier"], sdkGeneratorGlobals.buildTarget);
 }
 
 function reportErrorsAndExit(errorMessages) {
@@ -80,30 +111,36 @@ function reportErrorsAndExit(errorMessages) {
         return; // No errors to report, so continue
 
     // Else, report all errors and exit the program
-    console.log("Syntax: node generate.js\n" +
-        "\t\t<targetName>=<targetOutputPath>\n" +
-        "\t\t-(apiSpecPath|apiSpecGitUrl|apiSpecPfUrl)[ (<apiSpecPath>|<apiSpecGitUrl>|<apiSpecPfUrl>)]\n" +
-        "\t\t[ -flags <flag>[ <flag> ...]]\n\n" +
-        "\tExample: node generate.js unity-v2=../sdks/UnitySDK -apiSpecPath ../API_Specs -flags xbox playstation\n" +
-        "\t\tThis builds the UnitySDK, from Specs at relative path ../API_Specs, with console APIs included\n" +
-        "\t<apiSpecPath> : Directory or url containing the *.api.json files\n" +
-        "\tYou must list one or more <targetName>=<targetOutputPath> arguments.\n" +
-        "\tWarning, there can be no spaces in the target-specification\n");
+    console.log("Syntax: node generate.js\n\n" +
+        "\tCLI Options:\n" +
+        "\t(<templateName>=<outputPath>|-destPath <outputPath>)\n" +
+        "\t-(apiSpecPath|apiSpecGitUrl|apiSpecPfUrl)[ (<apiSpecPath>|<apiSpecGitUrl>|<apiSpecPfUrl>)]\n" +
+        "\t[ -flags <flag>[ <flag> ...]]\n\n" +
+        "\t* Where <templateName> is a subfolder within SDKGenerator/privateTemplates -OR- SDKGenerator/targets.\n" +
+        "\t* Where <outputPath> is a relative path from the working directory where the SDK is written.\n" +
+        "\t* Where <apiSpecPath> is a relative directory or url containing the *.api.json files\n" +
+        "\t* If -destPath is used, then genConfig.json must exist in <outputPath>.\n\n" +
+        "\tExample: node generate.js unity-v2=../sdks/UnitySDK\n" +
+        "\t\tThis builds the UnitySDK, from Specs at the default (GitHub) location\n\n" +
+        "\tExample: node generate.js -destPath ../sdks/UnitySDK\n" +
+        "\t\tThis builds the UnitySDK, using ../sdks/UnitySDK/genConfig.json for configuration\n\n" +
+        "\tYou must list exactly one of: <templateName>=<outputPath> or, -destPath <outputPath>.\n\n" +
+        "\tWarning, <templateName> and <outputPath> can not contain spaces.\n");
 
     console.log("\nError Log:");
     for (var i = 0; i < errorMessages.length; i++)
         console.log(errorMessages[i]);
 
-    console.log("\nPossible targetNames:");
-    var targetList = getTargetsList();
-    console.log("\t" + targetList.join(", "));
+    console.log("\nPossible template names:");
+    var templateList = getAvailableTemplates();
+    console.log("\t" + templateList.join(", "));
     process.exit(1);
 }
 
 /////////////////////////////////// Major step 1 - Parse and validate command-line inputs ///////////////////////////////////
-function parseCommandInputs(args, argsByName, errorMessages, targetOutputPathList) {
+function parseCommandInputs(args, argsByName: { [key: string]: string; }, errorMessages: string[], buildTarget: IBuildTarget) {
     // Parse the command line arguments into key-value-pairs
-    extractArgs(args, argsByName, targetOutputPathList, errorMessages);
+    extractArgs(args, argsByName, buildTarget, errorMessages);
 
     // Apply defaults
     if (argsByName.specialization) {
@@ -131,14 +168,11 @@ function parseCommandInputs(args, argsByName, errorMessages, targetOutputPathLis
     if (argsByName.apispecpfurl === "")
         argsByName.apispecpfurl = defaultApiSpecPlayFabUrl;
 
-    if (argsByName.unityDestinationSubfolder)
-        sdkGeneratorGlobals.unitySubfolder = argsByName.unityDestinationSubfolder;
+    // Output an error if no templates are defined
+    if (!buildTarget.destPath)
+        errorMessages.push("Build target's destPath not defined.");
 
-    // Output an error if no targets are defined
-    if (targetOutputPathList.length === 0)
-        errorMessages.push("No targets defined, you must define at least one.");
-
-    // Output an error if there's any problems with the api-spec source    
+    // Output an error if there's any problems with the api-spec source
     var specCount = 0;
     if (argsByName.apispecpath) specCount++;
     if (argsByName.apispecgiturl) specCount++;
@@ -151,10 +185,10 @@ function parseCommandInputs(args, argsByName, errorMessages, targetOutputPathLis
         argsByName.buildidentifier = "default_manual_build";
     argsByName.buildidentifier = argsByName.buildidentifier.toLowerCase(); // lowercase the buildIdentifier
     if (argsByName.hasOwnProperty("flags"))
-        sdkGeneratorGlobals.buildFlags = lowercaseFlagsList(argsByName.flags.split(" "));
+        buildTarget.buildFlags = lowercaseFlagsList(argsByName.flags.split(" "));
 }
 
-function extractArgs(args, argsByName, targetOutputPathList, errorMessages) {
+function extractArgs(args, argsByName: { [key: string]: string; }, buildTarget: IBuildTarget, errorMessages: string[]) {
     var cmdArgs = args.slice(2, args.length); // remove "node.exe generate.js"
     var activeKey = null;
     var specialization;
@@ -170,11 +204,9 @@ function extractArgs(args, argsByName, targetOutputPathList, errorMessages) {
         } else if (cmdArgs[i].indexOf("-") === 0) {
             activeKey = lcArg.substring(1); // remove the "-", lowercase the argsByName-key
             argsByName[activeKey] = "";
-        } else if (lcArg.indexOf("=") !== -1) { // any parameter with an "=" is assumed to be a target specification, lowercase the targetName
+        } else if (lcArg.indexOf("=") !== -1) { // any parameter with an "=" is assumed to be a target specification, lowercase the templateSubfolder
             var argPair = cmdArgs[i].split("=", 2);
-            checkTarget(argPair[0].toLowerCase(), argPair[1], targetOutputPathList, errorMessages);
-        } else if ((lcArg === "c:\\depot\\api_specs" || lcArg === "..\\api_specs") && activeKey === null && !argsByName.hasOwnProperty("apispecpath")) { // Special case to handle old API-Spec path as fixed 3rd parameter - DEPRECATED
-            argsByName["apispecpath"] = cmdArgs[i];
+            tryApplyTarget(argPair[0].toLowerCase(), argPair[1], buildTarget, errorMessages);
         } else if (activeKey === null) {
             errorMessages.push("Unexpected token: " + cmdArgs[i]);
         } else {
@@ -187,41 +219,70 @@ function extractArgs(args, argsByName, targetOutputPathList, errorMessages) {
     }
 
     // Pull from environment variables if there's no console-defined targets
-    if (targetOutputPathList.length === 0 && process.env.hasOwnProperty("SdkSource") && process.env.hasOwnProperty("SdkName")) {
-        checkTarget(process.env.hasOwnProperty("SdkSource"), process.env.hasOwnProperty("SdkName"), targetOutputPathList, errorMessages);
+    if (!buildTarget.destPath) {
+        console.log("argsByName: " + JSON.stringify(argsByName) + ", destPath: " + argsByName["destpath"]);
+
+        if (argsByName["destpath"]) {
+            tryApplyTarget(argsByName["templateFolder"], argsByName["destpath"], buildTarget, errorMessages);
+        } else if (process.env.hasOwnProperty("SdkName")) {
+            tryApplyTarget(process.env["SdkSource"], process.env["SdkName"], buildTarget, errorMessages);
+        } else {
+            errorMessages.push("Build target's destPath not defined.");
+        }
     }
 }
 
-interface ITargetOutput {
-    name: string,
-    dest: string,
-}
-function checkTarget(sdkSource, sdkDestination, targetOutputPathList, errorMessages) {
-    var targetOutput: ITargetOutput = {
-        name: sdkSource,
-        dest: path.normalize(sdkDestination)
-    };
-    if (fs.existsSync(targetOutput.dest) && !fs.lstatSync(targetOutput.dest).isDirectory())
-        errorMessages.push("Invalid target output path: " + targetOutput.dest);
-    else
-        targetOutputPathList.push(targetOutput);
+function tryApplyTarget(sdktemplateFolder, destPath, buildTarget: IBuildTarget, errorMessages) {
+    var destPath = path.normalize(destPath);
+    if (fs.existsSync(destPath) && !fs.lstatSync(destPath).isDirectory()) {
+        errorMessages.push("Invalid target output path: " + destPath);
+        return;
+    }
+
+    buildTarget.destPath = destPath;
+    buildTarget.templateFolder = sdktemplateFolder;
+    buildTarget.versionKey = sdktemplateFolder;
+    buildTarget.versionString = null;
 }
 
-function getTargetsList() {
-    var targetList = [];
-
-    var targetsDir = path.resolve(__dirname, "targets");
-
-    var targets = fs.readdirSync(targetsDir);
-    for (var i = 0; i < targets.length; i++) {
-        var target = targets[i];
-        if (target[0] === ".")
+function getMakeScriptForTemplate(buildTarget: IBuildTarget) {
+    var templateSubDirs: string[] = ["privateTemplates", "targets"];
+    for (var subIdx in templateSubDirs) {
+        var targetMain = path.resolve(__dirname, templateSubDirs[subIdx], buildTarget.templateFolder, "make.js");
+        if (!fs.existsSync(targetMain))
             continue;
 
-        var targetSourceDir = path.resolve(targetsDir, target);
-        var targetMain = path.resolve(targetSourceDir, "make.js"); // search for make.js in each subdirectory within "targets"
-        if (fs.existsSync(targetMain))
-            targetList.push(target);
+        var targetMaker = require(targetMain);
+        if (targetMaker) {
+            buildTarget.templateFolder = path.resolve(__dirname, templateSubDirs[subIdx], buildTarget.templateFolder);
+            buildTarget.targetMaker = targetMaker;
+            return;
+        }
+    }
+
+    throw Error("SDKGenerator/(privateTemplates|targets)/<templateFolder>/make.js not defined, for templateFolder: " + buildTarget.templateFolder);
+}
+
+function getAvailableTemplates(): string[] {
+    var targetList = [];
+
+    var templateSubDirs: string[] = ["privateTemplates", "targets"];
+    for (var subIdx in templateSubDirs) {
+        var templateRootDir = path.resolve(__dirname, templateSubDirs[subIdx]);
+        if (!fs.existsSync(templateRootDir))
+            continue;
+
+        var templatesInRoot = fs.readdirSync(templateRootDir);
+        for (var i = 0; i < templatesInRoot.length; i++) {
+            var eachTemplate = templatesInRoot[i];
+            if (eachTemplate[0] === ".")
+                continue;
+
+            var eachTemplateDir = path.resolve(templateRootDir, eachTemplate);
+            var targetMain = path.resolve(eachTemplateDir, "make.js"); // search for make.js in each subdirectory within "targets"
+            if (fs.existsSync(targetMain))
+                targetList.push(eachTemplate);
+        }
     }
 
     return targetList;
@@ -244,7 +305,7 @@ function getSpecializationTocRef(apiCache) {
     var specializationRefs = apiCache[tocCacheKey].specializations;
     if (specializationRefs) {
         for (var i = 0; i < specializationRefs.length; i++) {
-            if (specializationRefs[i].name == sdkGeneratorGlobals.specialization) {
+            if (specializationRefs[i].name === sdkGeneratorGlobals.specialization) {
                 return specializationRefs[i];
             }
         }
@@ -299,8 +360,8 @@ function loadApisFromLocalFiles(argsByName, apiCache, apiSpecPath, onComplete) {
         }
     }
 
-    sdkGeneratorGlobals.apiSrcDescription = argsByName.apispecpath;
-    onComplete();
+    sdkGeneratorGlobals.apiTemplateDescription = "-apiSpecPath " + argsByName.apispecpath;
+    catchAndReport(onComplete);
 }
 
 function loadApisFromGitHub(argsByName, apiCache, apiSpecGitUrl, onComplete) {
@@ -310,8 +371,8 @@ function loadApisFromGitHub(argsByName, apiCache, apiSpecGitUrl, onComplete) {
         finishCountdown -= 1;
         if (finishCountdown === 0) {
             console.log("Finished loading files from GitHub");
-            sdkGeneratorGlobals.apiSrcDescription = argsByName.apiSpecGitUrl;
-            onComplete();
+            sdkGeneratorGlobals.apiTemplateDescription = "-apiSpecGitUrl " + argsByName.apiSpecGitUrl;
+            catchAndReport(onComplete);
         }
     }
 
@@ -345,8 +406,8 @@ function loadApisFromPlayFabServer(argsByName, apiCache, apiSpecPfUrl, onComplet
         finishCountdown -= 1;
         if (finishCountdown === 0) {
             console.log("Finished loading files from PlayFab Server");
-            sdkGeneratorGlobals.apiSrcDescription = argsByName.apispecpfurl;
-            onComplete();
+            sdkGeneratorGlobals.apiTemplateDescription = "-apiSpecPfUrl " + argsByName.apispecpfurl;
+            catchAndReport(onComplete);
         }
     }
 
@@ -406,45 +467,63 @@ function downloadFromUrl(srcUrl: string, appendUrl: string, apiCache, cacheKey: 
 }
 
 /////////////////////////////////// Major step 3 - Generate the indicated ouptut files ///////////////////////////////////
-function generateApis(buildIdentifier, targetOutputPathList, buildFlags, apiSrcDescription) {
-    console.log("Generating PlayFab APIs from specs: " + apiSrcDescription);
+function generateApis(buildIdentifier, target: IBuildTarget) {
+    console.log("Generating PlayFab APIs from specs: " + sdkGeneratorGlobals.apiTemplateDescription);
 
-    var targetsDir = path.resolve(__dirname, "targets");
+    var genConfig: IGenConfig = null;
 
-    for (var targIdx = 0; targIdx < targetOutputPathList.length; targIdx++) {
-        var target = targetOutputPathList[targIdx];
+    // This is disabled until we more carefully detect and alert on input conflicts
+    var genConfigPath = path.resolve(target.destPath, "genConfig.json");
+    try {
+        var genConfigFile = require(genConfigPath);
+        var genConfigProfileName = sdkGeneratorGlobals.argsByName.hasOwnProperty("genconfigprofilename") ? sdkGeneratorGlobals.argsByName["genconfigprofilename"] : "default";
+        genConfig = genConfigFile[genConfigProfileName];
+        console.log("Loaded genConfig at: " + genConfigPath + " with profile:" + genConfigProfileName);
+    } catch (_) {
+        console.log("Did not find: " + genConfigPath);
+    }
 
-        var targetSourceDir = path.resolve(targetsDir, target.name);
-        var targetMain = path.resolve(targetSourceDir, "make.js");
-        console.log("Making target from: " + targetMain + "\n - to: " + target.dest);
-        var targetMaker = require(targetMain);
+    if (genConfig) {
+        if (genConfig.buildFlags) target.buildFlags = genConfig.buildFlags.split(" ");
+        if (genConfig.templateFolder) target.templateFolder = genConfig.templateFolder;
+        if (genConfig.versionKey) target.versionKey = genConfig.versionKey;
+        if (genConfig.versionString) target.versionString = genConfig.versionString;
+    }
 
-        // It would probably be better to pass these into the functions, but I don't want to change all the make___Api parameters for all projects today.
-        //   For now, just change the global variables in each with the data loaded from SdkManualNotes.json
+    getMakeScriptForTemplate(target);
+    console.log("Making SDK from:\n  - " + target.templateFolder + "\nto:\n  - " + target.destPath);
+
+    // It would probably be better to pass these into the functions, but I don't want to change all the make___Api parameters for all projects today.
+    //   For now, just change the global variables in each with the data loaded from SdkManualNotes.json
+    if (target.versionKey && !target.versionString) {
         var apiNotes = getApiJson("SdkManualNotes");
-        sdkGlobals.sdkVersion = apiNotes.sdkVersion[target.name];
-        sdkGlobals.buildIdentifier = buildIdentifier;
-        if (sdkGlobals.sdkVersion === null) {
-            throw "SdkManualNotes does not contain sdkVersion for " +
-            target.name; // The point of this error is to force you to add a line to sdkManualNotes.json, to describe the version and date when this sdk/collection is built
+        target.versionString = apiNotes.sdkVersion[target.versionKey];
+    }
+
+    console.log("BuildTarget: " + JSON.stringify(target));
+
+    sdkGlobals.sdkVersion = target.versionString;
+    sdkGlobals.buildIdentifier = buildIdentifier;
+    if (sdkGlobals.sdkVersion === null) {
+        // The point of this error is to force you to add a line to sdkManualNotes.json, to describe the version and date when this sdk/collection is built
+        throw Error("SdkManualNotes does not contain sdkVersion for " + target.templateFolder);
+    }
+
+    for (var funcIdx in sdkGeneratorGlobals.sdkDocsByMethodName) {
+        const funcName = sdkGeneratorGlobals.sdkDocsByMethodName[funcIdx].funcName;
+        const funcDocNames = sdkGeneratorGlobals.sdkDocsByMethodName[funcIdx].apiDocKeys;
+        const jsonDocList = [];
+        for (var docIdx = 0; docIdx < funcDocNames.length; docIdx++) {
+            var apiDefn = getApiDefinition(funcDocNames[docIdx], target.buildFlags)
+            if (apiDefn)
+                jsonDocList.push(apiDefn);
         }
 
-        for (var funcIdx in sdkGeneratorGlobals.sdkDocsByMethodName) {
-            const funcName = sdkGeneratorGlobals.sdkDocsByMethodName[funcIdx].funcName;
-            const funcDocNames = sdkGeneratorGlobals.sdkDocsByMethodName[funcIdx].apiDocKeys;
-            const jsonDocList = [];
-            for (var docIdx = 0; docIdx < funcDocNames.length; docIdx++) {
-                var apiDefn = getApiDefinition(funcDocNames[docIdx], buildFlags)
-                if (apiDefn)
-                    jsonDocList.push(apiDefn);
-            }
-
-            if (targetMaker[funcName]) {
-                console.log(" + Generating " + funcName + " to " + target.dest);
-                if (!fs.existsSync(target.dest))
-                    mkdirParentsSync(target.dest);
-                targetMaker[funcName](jsonDocList, targetSourceDir, target.dest);
-            }
+        if (target.targetMaker[funcName]) {
+            console.log(" + Generating " + funcName + " to " + target.destPath);
+            if (!fs.existsSync(target.destPath))
+                mkdirParentsSync(target.destPath);
+            target.targetMaker[funcName](jsonDocList, target.templateFolder, target.destPath);
         }
     }
 
@@ -575,8 +654,7 @@ interface String {
 
 // String utilities
 String.prototype.replaceAll = function (search, replacement) {
-    var target = this;
-    return target.replace(new RegExp(search, "g"), replacement);
+    return this.replace(new RegExp(search, "g"), replacement);
 };
 
 String.prototype.endsWith = function (suffix) {
@@ -614,9 +692,9 @@ String.prototype.wordWrap = function (width: number, brk: string, cut: boolean):
     return this;
 };
 
-// Official padStart implementation 
+// Official padStart implementation
 // https://github.com/uxitten/polyfill/blob/master/string.polyfill.js
-// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/padStart
+// https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String/padStart
 if (!String.prototype.padStart) {
     String.prototype.padStart = function padStart(targetLength, padString) {
         targetLength = targetLength >> 0; //truncate if number or convert non-number to 0;
@@ -637,7 +715,7 @@ if (!String.prototype.padStart) {
 // SDK generation utilities
 function templatizeTree(locals: { [key: string]: any }, sourcePath: string, destPath: string): void {
     if (!fs.existsSync(sourcePath))
-        throw "Copy tree source doesn't exist: " + sourcePath;
+        throw Error("Copy tree source doesn't exist: " + sourcePath);
     if (!fs.lstatSync(sourcePath).isDirectory()) // File
         return copyOrTemplatizeFile(locals, sourcePath, destPath);
 
@@ -645,7 +723,7 @@ function templatizeTree(locals: { [key: string]: any }, sourcePath: string, dest
     if (!fs.existsSync(destPath))
         mkdirParentsSync(destPath);
     else if (!fs.lstatSync(destPath).isDirectory())
-        throw "Can't copy a directory onto a file: " + sourcePath + " " + destPath;
+        throw Error("Can't copy a directory onto a file: " + sourcePath + " " + destPath);
 
     var filesInDir = fs.readdirSync(sourcePath);
     for (var i = 0; i < filesInDir.length; i++) {
@@ -670,7 +748,7 @@ function copyOrTemplatizeFile(locals: { [key: string]: any }, sourceFile: string
 
 function copyTree(sourcePath: string, destPath: string): void {
     if (!fs.existsSync(sourcePath))
-        throw "Copy tree source doesn't exist: " + sourcePath;
+        throw Error("Copy tree source doesn't exist: " + sourcePath);
     if (!fs.lstatSync(sourcePath).isDirectory()) // File
         return copyFile(sourcePath, destPath);
 
@@ -678,7 +756,7 @@ function copyTree(sourcePath: string, destPath: string): void {
     if (!fs.existsSync(destPath))
         mkdirParentsSync(destPath);
     else if (!fs.lstatSync(destPath).isDirectory())
-        throw "Can't copy a directory onto a file: " + sourcePath + " " + destPath;
+        throw Error("Can't copy a directory onto a file: " + sourcePath + " " + destPath);
 
     var filesInDir = fs.readdirSync(sourcePath);
     for (var i = 0; i < filesInDir.length; i++) {
@@ -729,11 +807,11 @@ global.copyFile = copyFile;
 
 function checkFileCopy(sourceFile: string, destFile: string): void {
     if (!sourceFile || !destFile)
-        throw "ERROR: Invalid copy file parameters: " + sourceFile + " " + destFile;
+        throw Error("ERROR: Invalid copy file parameters: " + sourceFile + " " + destFile);
     if (!fs.existsSync(sourceFile))
-        throw "ERROR: copyFile source doesn't exist: " + sourceFile;
+        throw Error("ERROR: copyFile source doesn't exist: " + sourceFile);
     if (fs.lstatSync(sourceFile).isDirectory())
-        throw "ERROR: copyFile source is a directory: " + sourceFile;
+        throw Error("ERROR: copyFile source is a directory: " + sourceFile);
 }
 
 function readFile(filename) {
@@ -763,15 +841,16 @@ function getCompiledTemplate(templatePath: string): any {
 }
 global.getCompiledTemplate = getCompiledTemplate;
 
-function doNothing() { }
-try {
-    // Kick everything off
-    parseAndLoadApis();
-}
-catch (error) {
-    console.error(error);
-    setTimeout(doNothing, 30000);
-    throw error;
+function catchAndReport(method) {
+    try {
+        method();
+    } catch (error) {
+        console.error(error);
+        setTimeout(function () { throw error; }, 30000);
+    }
 }
 
-setTimeout(doNothing, 5000);
+// Kick everything off
+catchAndReport(parseAndLoadApis);
+
+setTimeout(function() {}, 5000);

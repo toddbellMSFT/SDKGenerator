@@ -37,13 +37,9 @@ steps:
     ./csharp_build.bat
   displayName: 'generating CSharpSDK'
  
-- script: |
-    pwd
-    cd ../sdks/CSharpSDK/PlayFabSDK
-    ls
-    - task: DotNetCoreCLI@2
+- task: DotNetCoreCLI@2
       inputs:
         command: 'build'
-        projects: 'PlayFabSDK+Unit.sln'
+        projects: '../sdks/CSharpSDK/PlayFabSDK+Unit.sln'
         arguments: '/restore /p:configuration="Release" /t:Rebuild'
   displayName: 'testing csharp'

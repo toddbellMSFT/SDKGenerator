@@ -24,8 +24,8 @@ steps:
     echo wut
     pwd
     ls
-    mkdir "C:\sdks\"
-    pushd "C:\sdks\"
+    mkdir "sdks"
+    pushd "sdks"
     git clone https://github.com/PlayFab/CSharpSDK.git
     ls
     popd

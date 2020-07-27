@@ -37,7 +37,7 @@ steps:
     ./csharp_build.bat
   displayName: 'generating CSharpSDK'
  
- - script: |
+- script: |
     pwd
     cd ../sdks/CSharpSDK/PlayFabSDK
     ls

@@ -26,6 +26,7 @@ steps:
     mkdir "sdks"
     pushd "sdks"
     git clone https://github.com/PlayFab/CSharpSDK.git
+    cd CSharpSDK
     ls
     popd
     ls

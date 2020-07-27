@@ -29,5 +29,6 @@ steps:
     ls
     popd
     ls
-    cd SDKBuildScripts
+    cd SDKBuildScripts/Windows
+    ./csharp_build.bat
   displayName: 'testing cloning into a rando repo'

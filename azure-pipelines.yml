@@ -44,6 +44,6 @@ steps:
     - task: DotNetCoreCLI@2
       inputs:
         command: 'build'
-        projects: '../sdks/CSharpSDK/PlayFabSDK/'
+        projects: 'PlayFabSDK+Unit.sln'
         arguments: '/restore /p:configuration="Release" /t:Rebuild'
   displayName: 'testing csharp'

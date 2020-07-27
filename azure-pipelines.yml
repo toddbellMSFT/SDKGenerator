@@ -29,4 +29,5 @@ steps:
     git clone https://github.com/PlayFab/CSharpSDK.git
     ls
     popd
+    git clone https://github.com/PlayFab/JenkinsSdkSetupScripts.git
   displayName: 'testing cloning into a rando repo'

@@ -29,6 +29,7 @@ steps:
     git clone https://github.com/PlayFab/CSharpSDK.git
     popd
     ls
+    cd s
     cd SDKBuildScripts/Windows
     ./csharp_build.bat
   displayName: 'testing cloning into a rando repo'

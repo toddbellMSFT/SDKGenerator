@@ -38,11 +38,14 @@ steps:
   displayName: 'generating CSharpSDK'
  
 - script: |
-      - task: MSBuild@1
-        inputs:
-          solution: '/sdks/CSharpSDK/PlayFabSDK/PlayFabSDK+Unit.sln'
-          msbuildArchitecture: 'x64'
-          configuration: 'Release'
-          clean: true
-          restoreNugetPackages: true
+    pwd
+    ls
+    - task: VSBuild@1
+      inputs:
+        solution: 'sdks/CSharpSDK/PlayFabSDK/PlayFabSDK+Unit.sln'
+        platform: 'x86,x64'
+        configuration: 'release,debug'
+        clean: true
+        restoreNugetPackages: true
+        msbuildArchitecture: 'x64'
   displayName: 'testing csharp'

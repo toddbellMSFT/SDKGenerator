@@ -20,7 +20,7 @@ steps:
     npm run build
   displayName: 'npm install and build'
 
--script: |
+- script: |
     pwd
     ls
     cd ..

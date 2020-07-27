@@ -35,4 +35,9 @@ steps:
     pwd
     cd ../sdks/CSharpSDK/PlayFabSDK
     ls
+    - task: DotNetCoreCLI@2
+      inputs:
+        command: 'build'
+        projects: '../sdks/CSharpSDK/PlayFabSDK/'
+        arguments: '/restore /p:configuration="Release" /t:Rebuild'
   displayName: 'testing cloning into a rando repo'

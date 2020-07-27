@@ -28,9 +28,6 @@ steps:
     git clone https://github.com/PlayFab/CSharpSDK.git
     ls
     popd
-  displayName: 'testing cloning into a rando repo'
-
-- script: |
     ls
     cd SDKBuildScripts
-  displayName:'building csharp'
+  displayName: 'testing cloning into a rando repo'

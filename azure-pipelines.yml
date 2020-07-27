@@ -38,11 +38,12 @@ steps:
   displayName: 'generating CSharpSDK'
  
 - script: |
+    cd ..
     pwd
     ls
     - task: VSBuild@1
       inputs:
-        solution: '../sdks/CSharpSDK/PlayFabSDK/PlayFabSDK+Unit.sln'
+        solution: 'sdks/CSharpSDK/PlayFabSDK/PlayFabSDK+Unit.sln'
         platform: 'x86,x64'
         configuration: 'release,debug'
         clean: true

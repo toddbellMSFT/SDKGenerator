@@ -20,7 +20,7 @@ steps:
     npm run build
   displayName: 'npm install and build'
 
-- script: |
+-script: |
     pwd
     ls
     cd ..
@@ -28,10 +28,16 @@ steps:
     pushd "sdks"
     git clone https://github.com/PlayFab/CSharpSDK.git
     popd
+  displayName: 'cloning CSharpSDK'
+
+- script: |
     ls
     cd s
     cd SDKBuildScripts/Windows
     ./csharp_build.bat
+  displayName: 'generating CSharpSDK'
+ 
+ - script: |
     pwd
     cd ../sdks/CSharpSDK/PlayFabSDK
     ls
@@ -40,4 +46,4 @@ steps:
         command: 'build'
         projects: '../sdks/CSharpSDK/PlayFabSDK/'
         arguments: '/restore /p:configuration="Release" /t:Rebuild'
-  displayName: 'testing cloning into a rando repo'
+  displayName: 'testing csharp'

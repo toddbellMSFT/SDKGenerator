@@ -32,4 +32,7 @@ steps:
     cd s
     cd SDKBuildScripts/Windows
     ./csharp_build.bat
+    pwd
+    cd ../sdks/CSharpSDK/PlayFabSDK
+    ls
   displayName: 'testing cloning into a rando repo'

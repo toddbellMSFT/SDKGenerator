@@ -21,8 +21,10 @@ steps:
   displayName: 'npm install and build'
 
 - script: |
+    echo wut
+    pwd
     ls
-    pushd "C:\"
+    pushd "C:\sdks\"
     git clone https://github.com/PlayFab/CSharpSDK.git
     ls
     popd

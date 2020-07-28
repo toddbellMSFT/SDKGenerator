@@ -44,12 +44,14 @@ steps:
   displayName: 'testing csharp'
 
 - task: NuGetCommand@2
+  displayName: 'Nuget Restore CSharpSDK UnitTest'
   inputs:
     command: 'restore'
     restoreSolution: '../sdks/CSharpSDK/PlayFabSDK/PlayFabSDK+Unit.sln'
     feedsToUse: 'select'
 
 - task: VSBuild@1
+  displayName: 'Build CSharpSDKUnitTest: Release'
   inputs:
     solution: '../sdks/CSharpSDK/PlayFabSDK/PlayFabSDK+Unit.sln'
     configuration: 'Release'
@@ -57,6 +59,7 @@ steps:
     msbuildArchitecture: 'x64'
 
 - task: DotNetCoreCLI@2
+  displayName: 'CSharpSDK UnitTest Build'
   inputs:
     command: 'run'
     projects: '../sdks/CSharpSDK/PlayFabSDK/UnittestRunner/bin/Release/netcoreapp2.0/UnittestRunner.dll'

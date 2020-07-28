@@ -63,8 +63,22 @@ pool:
 steps:
 - checkout: self
   path: s
+
+- task: PowerShell@2
+  displayName: "Create folders for repos (workaround)"
+  inputs:
+    targetType: inline
+    script: |
+        cd ..
+        New-Item -Path . -Name "API_Specs" -ItemType "directory" # Equals "self"
+        New-Item -Path . -Name "sdks" -ItemType "directory" # Equals "self"
+        cd sdks
+        New-Item -Path . -Name "CSharpSDK" -ItemType "directory" # Equals "self"
+    pwsh: true
+
 - checkout: API_Specs
   path: s/API_Specs
+
 - checkout: CSharpSDK
   path: s/sdks/CSharpSDK
 

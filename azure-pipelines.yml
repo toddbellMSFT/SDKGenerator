@@ -128,13 +128,18 @@ steps:
     cd JenkinsSdkSetupScripts/JenkinsSdkSetupScripts/Creds
     pwd
     ls
+    cp testTitleData.json D:\a\1\s\sdks\CSharpSDK\PlayFabSDK\UnittestRunner\bin\Release\net45\testTilteData.json
     cd ../../..
     ls
+    cd 'sdks\CSharpSDK\PlayFabSDK\UnittestRunner\bin\Release\net45'
+    pwd
+    ls
+  displayName: copy TestTitleData.json
+
+- script: |
     cd sdks/CSharpSDK/PlayFabSDK/UnittestRunner/bin/Release/net45/
-    echo START UNIT TEST RUNNER
-    setx PF_TEST_TITLE_DATA_JSON 'D:\a\1\s\JenkinsSdkSetupScripts\JenkinsSdkSetupScripts\Creds\testTitleData.json'
-    cd 'D:\a\1\s\JenkinsSdkSetupScripts\JenkinsSdkSetupScripts\Creds'
-    cp 'D:\a\1\s\JenkinsSdkSetupScripts\JenkinsSdkSetupScripts\Creds\testTitleData.json' D:\a\1\s\sdks\CSharpSDK\PlayFabSDK\UnittestRunner\bin\Release\net45\testTilteData.json
+    echo START UNIT TEST RUNNER .Net45
+    setx PF_TEST_TITLE_DATA_JSON '/d/a/1/s/JenkinsSdkSetupScripts/JenkinsSdkSetupScripts/Creds/testTitleData.json'
     .\UnitTestRunner.exe -testInputsFile 'D:\a\1\s\JenkinsSdkSetupScripts\JenkinsSdkSetupScripts\Creds\testTitleData.json'
   displayName: 'dotNet 45 CSharpSDK UnitTestRunner'
 

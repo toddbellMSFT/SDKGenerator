@@ -1,16 +1,6 @@
 
-
-
-#### Paul's XPlat Resources
 resources:
   repositories:
-  # - repository: self
-  #   type: github
-  #   endpoint: 'GitHub connection MockVMAgent'
-  #   name: PlayFab/JenkinsConsoleUtility
-  #   path: .
-  #   trigger:
-  #     - master
   - repository: 'JenkinsSdkSetupScripts'
     type: github
     endpoint: 'GitHub connection MockVMAgent'
@@ -25,13 +15,6 @@ resources:
     path: ./API_Specs
     trigger:
       - master
-  # - repository: SdkGenerator
-  #   type: github
-  #   endpoint: 'GitHub connection MockVMAgent'
-  #   name: PlayFab/SdkGenerator
-  #   path: ./SdkGenerator
-  #   trigger:
-  #     - master
   - repository: CSharpSDK
     type: github
     endpoint: 'GitHub connection MockVMAgent'
@@ -39,15 +22,6 @@ resources:
     path: ./sdks/
     trigger:
       - master
-####
-
-
-# resources:
-#   repositories:
-#     - repository: 'JenkinsSdkSetupScripts'
-#       type: github
-#       endpoint: 'GitHub connection MockVMAgent'
-#       name: JenkinsSdkSetupScripts
 
 trigger:
 - master
@@ -143,7 +117,7 @@ steps:
 - script: |
     pwd
     ls
-    cd s/JenkinsSdkSetupScripts/JenkinsSdkSetupScripts/Creds
+    cd JenkinsSdkSetupScripts/JenkinsSdkSetupScripts/Creds
     pwd
     ls
     cd ../../../..

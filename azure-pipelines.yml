@@ -75,12 +75,12 @@ steps:
   displayName: 'npm install and build'
 
 - script: |
+    cd ..
     pwd
     ls
-    cd ..
-    mkdir "sdks"
-    pushd "sdks"
-    git clone https://github.com/PlayFab/CSharpSDK.git
+    #mkdir "sdks"
+    #pushd "sdks"
+    #git clone https://github.com/PlayFab/CSharpSDK.git
     popd
   displayName: 'Cloning CSharpSDK for genConfig'
 

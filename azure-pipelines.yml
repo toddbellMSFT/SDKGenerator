@@ -14,7 +14,7 @@ resources:
   - repository: 'JenkinsSdkSetupScripts'
     type: github
     endpoint: 'GitHub connection MockVMAgent'
-    name: JenkinsSdkSetupScripts
+    name: PlayFab/JenkinsSdkSetupScripts
     path: .
     trigger:
       - master

@@ -131,7 +131,7 @@ steps:
     cp testTitleData.json D:\a\1\s\sdks\CSharpSDK\PlayFabSDK\UnittestRunner\bin\Release\net45\testTilteData.json
     cd ../../..
     ls
-    cd 'sdks\CSharpSDK\PlayFabSDK\UnittestRunner\bin\Release\net45'
+    cd 'sdks/CSharpSDK/PlayFabSDK/UnittestRunner/bin/Release/net45'
     pwd
     ls
   displayName: copy TestTitleData.json

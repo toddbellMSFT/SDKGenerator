@@ -43,6 +43,13 @@ steps:
     ls
   displayName: 'testing csharp'
 
+- task: UseDotNet@2
+  displayName: 'Use .NET Core 2.2.2 sdk'
+  inputs:
+    packageType: sdk
+    version: 2.2.203
+    installationPath: $(Agent.ToolsDirectory)/dotnet
+
 - task: NuGetCommand@2
   displayName: 'Nuget Restore CSharpSDK UnitTest'
   inputs:
@@ -58,16 +65,10 @@ steps:
     clean: true
     msbuildArchitecture: 'x64'
 
-- task: UseDotNet@2
-  displayName: 'Use .NET Core 2.2.2 sdk'
-  inputs:
-    packageType: sdk
-    version: 2.2.203
-    installationPath: $(Agent.ToolsDirectory)/dotnet
-
 - task: DotNetCoreCLI@2
-  displayName: 'CSharpSDK UnitTest Build'
+  displayName: 'CSharpSDK UnitTest Run'
   inputs:
     command: 'run'
     projects: '../sdks/CSharpSDK/PlayFabSDK/UnittestRunner/bin/Release/netcoreapp2.0/UnittestRunner.dll'
-    arguments: '-testInputsFile SYNCJENKINSADDTESTTITLEDATAJSON'
+    arguments: '-o ../sdks/CSharpSDK/PlayFabSDK/UnittestRunner/bin/Release/netcoreapp2.0/ -testInputsFile SYNCJENKINSADDTESTTITLEDATAJSON'
+    modifyOutputPath: true

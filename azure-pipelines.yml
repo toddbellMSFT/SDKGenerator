@@ -43,6 +43,12 @@ steps:
     ls
   displayName: 'testing csharp'
 
+- task: NuGetCommand@2
+  inputs:
+    command: 'restore'
+    restoreSolution: '../sdks/CSharpSDK/PlayFabSDK/PlayFabSDK+Unit.sln'
+    feedsToUse: 'select'
+
 - task: VSBuild@1
   inputs:
     solution: '../sdks/CSharpSDK/PlayFabSDK/PlayFabSDK+Unit.sln'

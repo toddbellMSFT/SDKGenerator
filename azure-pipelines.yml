@@ -63,7 +63,7 @@ pool:
 steps:
 - checkout: self
   clean: true
-  path: s
+  path: s/SDKGenerator
 
 - task: PowerShell@2
   displayName: "Create folders for repos (workaround)"

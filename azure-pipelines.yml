@@ -115,13 +115,6 @@ steps:
     msbuildArchitecture: 'x64'
 
 - script: |
-    pwd
-    ls
-    cd JenkinsSdkSetupScripts/JenkinsSdkSetupScripts/Creds
-    pwd
-    ls
-    cd ../../..
-    ls
     cd sdks/CSharpSDK/PlayFabSDK/UnittestRunner/bin/Release/netcoreapp2.0/
     echo START UNIT TEST RUNNER
     cp 'D:\a\1\s\JenkinsSdkSetupScripts\JenkinsSdkSetupScripts\Creds\testTitleData.json' D:\a\1\s\sdks\CSharpSDK\PlayFabSDK\UnittestRunner\bin\Release\netcoreapp2.0\testTilteData.json

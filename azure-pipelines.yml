@@ -28,7 +28,7 @@ steps:
     pushd "sdks"
     git clone https://github.com/PlayFab/CSharpSDK.git
     popd
-  displayName: 'cloning CSharpSDK'
+  displayName: 'Cloning CSharpSDK'
 
 - script: |
     ls
@@ -46,8 +46,8 @@ steps:
 - task: VSBuild@1
   inputs:
     solution: '../sdks/CSharpSDK/PlayFabSDK/PlayFabSDK+Unit.sln'
-    platform: 'x86,x64'
-    configuration: 'release,debug'
+    platform: 'x64'
+    configuration: 'release'
     clean: true
     restoreNugetPackages: true
     msbuildArchitecture: 'x64'

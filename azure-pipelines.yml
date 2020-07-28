@@ -1,7 +1,19 @@
-# Node.js
-# Build a general Node.js project with npm.
-# Add steps that analyze code, save build artifacts, deploy, and more:
-# https://docs.microsoft.com/azure/devops/pipelines/languages/javascript
+
+resources:
+  repositories:
+    - repository: SDKGenerator
+      type: github
+      endpoint: toddbellMSFT/SDKGenerator
+      name: SDKGenerator
+    - repository: JenkinsSdkSetupScripts
+      type: github
+      endpoint: PlayFab/JenkinsSdkSetupScripts
+      name: JenkinsSdkSetupScripts
+    - repository: CSharpSDK
+      type: github
+      endpoint: PlayFab/CSharpSDK
+      name: CSharpSDK
+      path: /sdks/CSharpSDK
 
 trigger:
 - master
@@ -10,6 +22,13 @@ pool:
   vmImage: 'windows-latest'
 
 steps:
+
+- checkout: self
+
+- checkout: SDKGenerator
+- checkout: JenkinsSdkSetupScripts
+- checkout: CSharpSDK
+
 - task: NodeTool@0
   inputs:
     versionSpec: '10.x'

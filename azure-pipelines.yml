@@ -3,7 +3,7 @@ resources:
   repositories:
     - repository: JenkinsSdkSetupScripts
       type: github
-      endpoint: PlayFab/JenkinsSdkSetupScripts
+      endpoint: https://github.com/PlayFab/JenkinsSdkSetupScripts.git
       name: JenkinsSdkSetupScripts
     - repository: CSharpSDK
       type: github

@@ -151,7 +151,7 @@ steps:
 - script: |
     git clone https://github.com/PlayFab/JenkinsSdkSetupScripts.git
     cd sdks/CSharpSDK/PlayFabSDK/UnittestRunner/bin/Release/netcoreapp2.0/
-    dotnet .\UnitTestRunner.dll -testInputsFile '$(System.ArtifactsDirectory)'/JenkinsSdkSetupScripts/JenkinsSdkSetupScripts/Creds/testTitleData.json
+    dotnet .\UnitTestRunner.dll -testInputsFile JenkinsSdkSetupScripts/JenkinsSdkSetupScripts/Creds/testTitleData.json
   displayName: 'CSharpSDK UnitTestRunner'
 
 # - task: DotNetCoreCLI@2

@@ -11,13 +11,13 @@ resources:
   #   path: .
   #   trigger:
   #     - master
-  # - repository: 'JenkinsSdkSetupScripts'
-  #   type: github
-  #   endpoint: 'GitHub connection MockVMAgent'
-  #   name: JenkinsSdkSetupScripts
-  #   path: .
-  #   trigger:
-  #     - master
+  - repository: 'JenkinsSdkSetupScripts'
+    type: github
+    endpoint: 'GitHub connection MockVMAgent'
+    name: JenkinsSdkSetupScripts
+    path: .
+    trigger:
+      - master
   - repository: API_Specs
     type: github
     endpoint: 'GitHub connection MockVMAgent'
@@ -48,11 +48,6 @@ resources:
 #       type: github
 #       endpoint: 'GitHub connection MockVMAgent'
 #       name: JenkinsSdkSetupScripts
-#     - repository: 'CSharpSDK'
-#       type: github
-#       endpoint: 'GitHub connection MockVMAgent'
-#       name: CSharpSDK
-#       path: /sdks/CSharpSDK
 
 trigger:
 - master
@@ -73,6 +68,7 @@ steps:
     script: |
         cd ..
         New-Item -Path . -Name "SDKGenerator" -ItemType "directory" # Equals "self"
+        New-Item -Path . -Name "JenkinsSdkSetupScripts" -ItemType "directory" # Equals "self"
         New-Item -Path . -Name "API_Specs" -ItemType "directory" # Equals "self"
         New-Item -Path . -Name "sdks" -ItemType "directory" # Equals "self"
         cd sdks
@@ -83,6 +79,11 @@ steps:
   clean: true
   persistCredentials: true
   path: s/API_Specs
+
+- checkout: JenkinsSdkSetupScripts
+  clean: true
+  persistCredentials: true
+  path: s/JenkinsSdkSetupScripts
 
 - checkout: CSharpSDK
   clean: true

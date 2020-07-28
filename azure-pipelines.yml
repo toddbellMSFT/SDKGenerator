@@ -108,7 +108,7 @@ steps:
 - script: |
     ls
     cd s
-    cd SDKBuildScripts/Windows
+    cd SDKGenerator/SDKBuildScripts/Windows
     ./csharp_build.bat
   displayName: 'Generating CSharpSDK'
 
@@ -128,13 +128,13 @@ steps:
   displayName: 'Nuget Restore CSharpSDK UnitTest'
   inputs:
     command: 'restore'
-    restoreSolution: '../sdks/CSharpSDK/PlayFabSDK/PlayFabSDK+Unit.sln'
+    restoreSolution: 'sdks/CSharpSDK/PlayFabSDK/PlayFabSDK+Unit.sln'
     feedsToUse: 'select'
 
 - task: VSBuild@1
   displayName: 'Build CSharpSDKUnitTest: Release'
   inputs:
-    solution: '../sdks/CSharpSDK/PlayFabSDK/PlayFabSDK+Unit.sln'
+    solution: 'sdks/CSharpSDK/PlayFabSDK/PlayFabSDK+Unit.sln'
     configuration: 'Release'
     clean: true
     msbuildArchitecture: 'x64'
@@ -149,7 +149,7 @@ steps:
 
 - script: |
     git clone https://github.com/PlayFab/JenkinsSdkSetupScripts.git
-    cd ../sdks/CSharpSDK/PlayFabSDK/UnittestRunner/bin/Release/netcoreapp2.0/
+    cd sdks/CSharpSDK/PlayFabSDK/UnittestRunner/bin/Release/netcoreapp2.0/
     dotnet .\UnitTestRunner.dll -testInputsFile '$(System.ArtifactsDirectory)'/JenkinsSdkSetupScripts/JenkinsSdkSetupScripts/Creds/testTitleData.json
   displayName: 'CSharpSDK UnitTestRunner'
 

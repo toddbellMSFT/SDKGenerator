@@ -11,13 +11,13 @@ resources:
   #   path: .
   #   trigger:
   #     - master
-  - repository: 'JenkinsSdkSetupScripts'
-    type: github
-    endpoint: 'GitHub connection MockVMAgent'
-    name: JenkinsSdkSetupScripts
-    path: .
-    trigger:
-      - master
+  # - repository: 'JenkinsSdkSetupScripts'
+  #   type: github
+  #   endpoint: 'GitHub connection MockVMAgent'
+  #   name: JenkinsSdkSetupScripts
+  #   path: .
+  #   trigger:
+  #     - master
   - repository: API_Specs
     type: github
     endpoint: 'GitHub connection MockVMAgent'

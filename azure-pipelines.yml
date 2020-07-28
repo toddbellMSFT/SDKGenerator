@@ -71,8 +71,9 @@ steps:
     msbuildArchitecture: 'x64'
 
 - script: |
+    git clone https://github.com/PlayFab/JenkinsSdkSetupScripts.git
     cd ../sdks/CSharpSDK/PlayFabSDK/UnittestRunner/bin/Release/netcoreapp2.0/
-    dotnet .\UnitTestRunner.dll -testInputsFile testTitleData.json
+    dotnet .\UnitTestRunner.dll -testInputsFile ../../../../../../../../JenkinsSdkSetupScripts/JenkinsSdkSetupScripts/Creds/testTitleData.json
   displayName: 'test dot net run script'
 
 # - task: DotNetCoreCLI@2

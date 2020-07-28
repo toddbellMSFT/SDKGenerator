@@ -123,6 +123,13 @@ steps:
 #   displayName: 'NetCore 2.0 CSharpSDK UnitTestRunner'
 
 - script: |
+    pwd
+    ls
+    cd JenkinsSdkSetupScripts/JenkinsSdkSetupScripts/Creds
+    pwd
+    ls
+    cd ../../..
+    ls
     cd sdks/CSharpSDK/PlayFabSDK/UnittestRunner/bin/Release/net45/
     echo START UNIT TEST RUNNER
     setx PF_TEST_TITLE_DATA_JSON 'D:\a\1\s\JenkinsSdkSetupScripts\JenkinsSdkSetupScripts\Creds\testTitleData.json'

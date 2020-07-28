@@ -28,20 +28,14 @@ steps:
     pushd "sdks"
     git clone https://github.com/PlayFab/CSharpSDK.git
     popd
-  displayName: 'Cloning CSharpSDK'
+  displayName: 'Cloning CSharpSDK for genConfig'
 
 - script: |
     ls
     cd s
     cd SDKBuildScripts/Windows
     ./csharp_build.bat
-  displayName: 'generating CSharpSDK'
- 
-- script: |
-    cd ../sdks/CSharpSDK/PlayFabSDK/
-    pwd
-    ls
-  displayName: 'testing csharp'
+  displayName: 'Generating CSharpSDK'
 
 - task: UseDotNet@2
   displayName: 'Use .NET Core 2.x sdk'
@@ -50,10 +44,10 @@ steps:
     version: 2.x
     installationPath: $(Agent.ToolsDirectory)/dotnet
 
-- script: |
-    echo ALL THE DOT NET SDKs
-    dotnet --list-sdks
-  displayName: 'looking for dot net version'
+# - script: |
+#     echo SANITY CHECK FOR PREVIOUS DOT NET CHANGE
+#     dotnet --list-sdks
+#   displayName: 'looking for dot net version'
 
 - task: NuGetCommand@2
   displayName: 'Nuget Restore CSharpSDK UnitTest'
@@ -82,7 +76,7 @@ steps:
     git clone https://github.com/PlayFab/JenkinsSdkSetupScripts.git
     cd ../sdks/CSharpSDK/PlayFabSDK/UnittestRunner/bin/Release/netcoreapp2.0/
     dotnet .\UnitTestRunner.dll -testInputsFile '$(System.ArtifactsDirectory)'/JenkinsSdkSetupScripts/JenkinsSdkSetupScripts/Creds/testTitleData.json
-  displayName: 'test dot net run script'
+  displayName: 'CSharpSDK UnitTestRunner'
 
 # - task: DotNetCoreCLI@2
 #   displayName: 'CSharpSDK UnitTest Run'

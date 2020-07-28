@@ -63,6 +63,7 @@ pool:
 steps:
 - checkout: self
   clean: true
+  persistCredentials: true
   path: s/SDKGenerator
 
 - task: PowerShell@2
@@ -79,10 +80,12 @@ steps:
 
 - checkout: API_Specs
   clean: true
+  persistCredentials: true
   path: s/API_Specs
 
 - checkout: CSharpSDK
   clean: true
+  persistCredentials: true
   path: s/sdks/CSharpSDK
 
 - task: NodeTool@0

@@ -3,7 +3,7 @@ resources:
   repositories:
     - repository: JenkinsSdkSetupScripts
       type: github
-      endpoint: https://github.com/PlayFab/JenkinsSdkSetupScripts.git
+      endpoint: 'GitHub connection MockVMAgent'
       name: JenkinsSdkSetupScripts
     - repository: CSharpSDK
       type: github

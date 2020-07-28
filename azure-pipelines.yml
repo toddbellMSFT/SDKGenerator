@@ -44,10 +44,10 @@ steps:
   displayName: 'testing csharp'
 
 - task: UseDotNet@2
-  displayName: 'Use .NET Core 2.2.2 sdk'
+  displayName: 'Use .NET Core 2.x sdk'
   inputs:
     packageType: sdk
-    version: 2.2.203
+    version: 2.x
     installationPath: $(Agent.ToolsDirectory)/dotnet
 
 - task: NuGetCommand@2

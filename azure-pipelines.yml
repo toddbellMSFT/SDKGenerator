@@ -124,7 +124,8 @@ steps:
     ls
     cd sdks/CSharpSDK/PlayFabSDK/UnittestRunner/bin/Release/netcoreapp2.0/
     echo START UNIT TEST RUNNER
-    dotnet .\UnitTestRunner.dll -testInputsFile 'D:\a\1\s\JenkinsSdkSetupScripts\JenkinsSdkSetupScripts\Creds\testTitleData.json'
+    cp 'D:\a\1\s\JenkinsSdkSetupScripts\JenkinsSdkSetupScripts\Creds\testTitleData.json' D:\a\1\s\sdks\CSharpSDK\PlayFabSDK\UnittestRunner\bin\Release\netcoreapp2.0\testTilteData.json
+    dotnet .\UnitTestRunner.dll -testInputsFile testTitleData.json
   displayName: 'CSharpSDK UnitTestRunner'
 
 # - task: DotNetCoreCLI@2

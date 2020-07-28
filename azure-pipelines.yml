@@ -78,9 +78,6 @@ steps:
     cd ..
     pwd
     ls
-    #mkdir "sdks"
-    #pushd "sdks"
-    #git clone https://github.com/PlayFab/CSharpSDK.git
     popd
   displayName: 'Cloning CSharpSDK for genConfig'
 

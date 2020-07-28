@@ -61,8 +61,12 @@ pool:
   vmImage: 'windows-latest'
 
 steps:
-
 - checkout: self
+  path: s
+- checkout: API_Specs
+  path: s/API_Specs
+- checkout: CSharpSDK
+  path: s/sdks/CSharpSDK
 
 - task: NodeTool@0
   inputs:
@@ -78,7 +82,6 @@ steps:
     cd ..
     pwd
     ls
-    popd
   displayName: 'Cloning CSharpSDK for genConfig'
 
 - script: |

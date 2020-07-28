@@ -1,15 +1,58 @@
 
+
+
+#### Paul's XPlat Resources
 resources:
   repositories:
-    - repository: 'JenkinsSdkSetupScripts'
-      type: github
-      endpoint: 'GitHub connection MockVMAgent'
-      name: JenkinsSdkSetupScripts
-    - repository: 'CSharpSDK'
-      type: github
-      endpoint: 'GitHub connection MockVMAgent'
-      name: CSharpSDK
-      path: /sdks/CSharpSDK
+  # - repository: self
+  #   type: github
+  #   endpoint: 'GitHub connection MockVMAgent'
+  #   name: PlayFab/JenkinsConsoleUtility
+  #   path: .
+  #   trigger:
+  #     - master
+  - repository: 'JenkinsSdkSetupScripts'
+    type: github
+    endpoint: 'GitHub connection MockVMAgent'
+    name: JenkinsSdkSetupScripts
+    path: .
+    trigger:
+      - master
+  - repository: API_Specs
+    type: github
+    endpoint: 'GitHub connection MockVMAgent'
+    name: PlayFab/API_Specs
+    path: ./API_Specs
+    trigger:
+      - master
+  - repository: SdkGenerator
+    type: github
+    endpoint: 'GitHub connection MockVMAgent'
+    name: PlayFab/SdkGenerator
+    path: ./SdkGenerator
+    trigger:
+      - master
+  - repository: CSharpSDK
+    type: github
+    endpoint: 'GitHub connection MockVMAgent'
+    name: PlayFab/CSharpSDK
+    path: ./sdks/
+    trigger:
+      - master
+####
+
+
+# resources:
+#   repositories:
+#     - repository: 'JenkinsSdkSetupScripts'
+#       type: github
+#       endpoint: 'GitHub connection MockVMAgent'
+#       name: JenkinsSdkSetupScripts
+#     - repository: 'CSharpSDK'
+#       type: github
+#       endpoint: 'GitHub connection MockVMAgent'
+#       name: CSharpSDK
+#       path: /sdks/CSharpSDK
 
 trigger:
 - master

@@ -25,13 +25,13 @@ resources:
     path: ./API_Specs
     trigger:
       - master
-  - repository: SdkGenerator
-    type: github
-    endpoint: 'GitHub connection MockVMAgent'
-    name: PlayFab/SdkGenerator
-    path: ./SdkGenerator
-    trigger:
-      - master
+  # - repository: SdkGenerator
+  #   type: github
+  #   endpoint: 'GitHub connection MockVMAgent'
+  #   name: PlayFab/SdkGenerator
+  #   path: ./SdkGenerator
+  #   trigger:
+  #     - master
   - repository: CSharpSDK
     type: github
     endpoint: 'GitHub connection MockVMAgent'

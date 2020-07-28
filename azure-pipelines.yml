@@ -1,10 +1,6 @@
 
 resources:
   repositories:
-    - repository: SDKGenerator
-      type: github
-      endpoint: toddbellMSFT/SDKGenerator
-      name: SDKGenerator
     - repository: JenkinsSdkSetupScripts
       type: github
       endpoint: PlayFab/JenkinsSdkSetupScripts
@@ -25,7 +21,6 @@ steps:
 
 - checkout: self
 
-- checkout: SDKGenerator
 - checkout: JenkinsSdkSetupScripts
 - checkout: CSharpSDK
 

@@ -70,10 +70,16 @@ steps:
     clean: true
     msbuildArchitecture: 'x64'
 
-- task: DotNetCoreCLI@2
-  displayName: 'CSharpSDK UnitTest Run'
-  inputs:
-    command: 'run'
-    projects: '../sdks/CSharpSDK/PlayFabSDK/UnittestRunner/bin/Release/netcoreapp2.0/UnittestRunner.dll'
-    arguments: '-o ../sdks/CSharpSDK/PlayFabSDK/UnittestRunner/bin/Release/netcoreapp2.0/ -testInputsFile SYNCJENKINSADDTESTTITLEDATAJSON'
-    modifyOutputPath: true
+- script: |
+    cd ../sdks/CSharpSDK/PlayFabSDK/UnittestRunner/bin/Release/netcoreapp2.0/
+    dotnet .\UnitTestRunner.dll -testInputsFile testTitleData.json
+  displayName: 'test dot net run script'
+
+# - task: DotNetCoreCLI@2
+#   displayName: 'CSharpSDK UnitTest Run'
+#   inputs:
+#     command: 'run'
+#     projects: '../sdks/CSharpSDK/PlayFabSDK/UnittestRunner/bin/Release/netcoreapp2.0/UnittestRunner.dll'
+#     arguments: '-o ../sdks/CSharpSDK/PlayFabSDK/UnittestRunner/bin/Release/netcoreapp2.0/ -testInputsFile SYNCJENKINSADDTESTTITLEDATAJSON'
+#     modifyOutputPath: true
+

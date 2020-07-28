@@ -50,6 +50,11 @@ steps:
     version: 2.x
     installationPath: $(Agent.ToolsDirectory)/dotnet
 
+- script: |
+    echo ALL THE DOT NET SDKs
+    dotnet --list-sdks
+  displayName: 'looking for dot net version'
+
 - task: NuGetCommand@2
   displayName: 'Nuget Restore CSharpSDK UnitTest'
   inputs:

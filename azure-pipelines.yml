@@ -70,14 +70,16 @@ steps:
     clean: true
     msbuildArchitecture: 'x64'
 
-- task: DownloadGitHubRelease@0
-  inputs:
-    connection: 'GitHub connection MockVMAgent'
-    userRepository: 'PlayFab/JenkinsSdkSetupScripts'
-    defaultVersionType: 'latest'
-    downloadPath: '$(System.ArtifactsDirectory)'
+# TODO: this technically should work. But we don't have a release, maybe that's inappropriate though for a private repo.
+# - task: DownloadGitHubRelease@0
+#   inputs:
+#     connection: 'GitHub connection MockVMAgent'
+#     userRepository: 'PlayFab/JenkinsSdkSetupScripts'
+#     defaultVersionType: 'latest'
+#     downloadPath: '$(System.ArtifactsDirectory)'
 
 - script: |
+    git clone https://github.com/PlayFab/JenkinsSdkSetupScripts.git
     cd ../sdks/CSharpSDK/PlayFabSDK/UnittestRunner/bin/Release/netcoreapp2.0/
     dotnet .\UnitTestRunner.dll -testInputsFile '$(System.ArtifactsDirectory)'/JenkinsSdkSetupScripts/JenkinsSdkSetupScripts/Creds/testTitleData.json
   displayName: 'test dot net run script'

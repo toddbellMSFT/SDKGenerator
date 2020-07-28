@@ -54,5 +54,4 @@ steps:
     solution: '../sdks/CSharpSDK/PlayFabSDK/PlayFabSDK+Unit.sln'
     configuration: 'Release'
     clean: true
-    restoreNugetPackages: true
     msbuildArchitecture: 'x64'

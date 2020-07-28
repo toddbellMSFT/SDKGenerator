@@ -141,10 +141,15 @@ steps:
     msbuildArchitecture: 'x64'
 
 - script: |
-    pushd s/JenkinsSdkSetupScripts/JenkinsSdkSetupScripts/Creds
-    ld
-    popd
+    pwd
+    ls
+    cd s/JenkinsSdkSetupScripts/JenkinsSdkSetupScripts/Creds
+    pwd
+    ls
+    cd ../../../..
+    ls
     cd sdks/CSharpSDK/PlayFabSDK/UnittestRunner/bin/Release/netcoreapp2.0/
+    echo START UNIT TEST RUNNER
     dotnet .\UnitTestRunner.dll -testInputsFile '/s/JenkinsSdkSetupScripts/JenkinsSdkSetupScripts/Creds/testTitleData.json'
   displayName: 'CSharpSDK UnitTestRunner'
 

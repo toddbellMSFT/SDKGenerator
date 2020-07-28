@@ -46,8 +46,7 @@ steps:
 - task: VSBuild@1
   inputs:
     solution: '../sdks/CSharpSDK/PlayFabSDK/PlayFabSDK+Unit.sln'
-    platform: 'x64'
-    configuration: 'release'
+    configuration: 'Release'
     clean: true
     restoreNugetPackages: true
     msbuildArchitecture: 'x64'

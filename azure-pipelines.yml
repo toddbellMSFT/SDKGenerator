@@ -149,7 +149,6 @@ steps:
 #     downloadPath: '$(System.ArtifactsDirectory)'
 
 - script: |
-    git clone https://github.com/PlayFab/JenkinsSdkSetupScripts.git
     cd sdks/CSharpSDK/PlayFabSDK/UnittestRunner/bin/Release/netcoreapp2.0/
     dotnet .\UnitTestRunner.dll -testInputsFile JenkinsSdkSetupScripts/JenkinsSdkSetupScripts/Creds/testTitleData.json
   displayName: 'CSharpSDK UnitTestRunner'

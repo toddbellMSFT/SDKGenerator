@@ -1,13 +1,13 @@
 
 resources:
   repositories:
-    - repository: JenkinsSdkSetupScripts
+    - repository: 'JenkinsSdkSetupScripts'
       type: github
       endpoint: 'GitHub connection MockVMAgent'
       name: JenkinsSdkSetupScripts
-    - repository: CSharpSDK
+    - repository: 'CSharpSDK'
       type: github
-      endpoint: 'https://github.com/PlayFab/CSharpSDK.git'
+      endpoint: 'GitHub connection MockVMAgent'
       name: CSharpSDK
       path: /sdks/CSharpSDK
 

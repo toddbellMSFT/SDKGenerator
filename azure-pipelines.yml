@@ -5,7 +5,7 @@ resources:
     type: github
     endpoint: 'GitHub connection MockVMAgent'
     name: PlayFab/JenkinsSdkSetupScripts
-    path: s
+    path: s/
     trigger:
       - master
   - repository: API_Specs

@@ -128,10 +128,24 @@ steps:
     cd JenkinsSdkSetupScripts/JenkinsSdkSetupScripts/Creds
     pwd
     ls
+    echo copying file
     cp testTitleData.json D:\a\1\s\sdks\CSharpSDK\PlayFabSDK\UnittestRunner\bin\Release\net45\testTilteData.json
+    echo file should be there now
     cd ../../..
     ls
-    cd 'sdks/CSharpSDK/PlayFabSDK/UnittestRunner/bin/Release/net45'
+    cd sdks
+    pwd
+    cd CSharpSDK
+    pwd
+    cd PlayFabSDK
+    pwd
+    cd UnitTestRunner
+    pwd
+    cd bin
+    pwd
+    cd Release
+    pwd
+    cd net45
     pwd
     ls
   displayName: copy TestTitleData.json

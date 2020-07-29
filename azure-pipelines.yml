@@ -81,7 +81,7 @@ steps:
   displayName: set testTilteData local environment variable
 
 - script: |
-    echo testing 2 $(PF_TEST_TITLE_DATA_JSON)
+    echo testing 2 ($PF_TEST_TITLE_DATA_JSON)
     ls
     cd s
     cd SDKGenerator/SDKBuildScripts/Windows

@@ -76,8 +76,8 @@ steps:
 
 - bash: |
     WORKSPACE="$PWD"
-    PF_TEST_TITLE_DATA_JSON="$WORKSPACE/JenkinsSdkSetupScripts/JenkinsScripts/Creds/testTitleData.json"
-    echo testing $(PF_TEST_TITLE_DATA_JSON)
+    PF_TEST_TITLE_DATA_JSON="$WORKSPACE/JenkinsSdkSetupScripts/JenkinsSdkSetupScripts/JenkinsScripts/Creds/testTitleData.json"
+    echo testing $PF_TEST_TITLE_DATA_JSON
   displayName: set testTilteData local environment variable
 
 - script: |

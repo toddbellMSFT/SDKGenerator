@@ -154,11 +154,11 @@ steps:
     fi
   displayName: bash way
 
-# - bash: |
-#     cd sdks/CSharpSDK/PlayFabSDK/UnittestRunner/bin/Release/netcoreapp2.0/
-#     echo START NetCore 2.0 UNIT TEST RUNNER with this file: $PF_TEST_TITLE_DATA_JSON
-#     dotnet .\UnitTestRunner.dll -testInputsFile '$PF_TEST_TITLE_DATA_JSON'
-#   displayName: 'NetCore 2.0 CSharpSDK UnitTestRunner'
+- bash: |
+    cd sdks/CSharpSDK/PlayFabSDK/UnittestRunner/bin/Release/netcoreapp2.0/
+    echo START NetCore 2.0 UNIT TEST RUNNER with this file: $PF_TEST_TITLE_DATA_JSON
+    cmd <<< dotnet .\UnitTestRunner.dll -testInputsFile '$PF_TEST_TITLE_DATA_JSON'
+  displayName: 'NetCore 2.0 CSharpSDK UnitTestRunner'
 
 - bash: |
     cd sdks/CSharpSDK/PlayFabSDK/UnittestRunner/bin/Release/net45/

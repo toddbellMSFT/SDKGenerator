@@ -37,13 +37,14 @@ steps:
     targetType: inline
     script: |
         New-Item -Path . -Name "JenkinsSdkSetupScripts" -ItemType "directory" # Equals "self"
-#        New-Item -Path . -Name "SDKGenerator" -ItemType "directory" # Equals "self"
-#        New-Item -Path . -Name "API_Specs" -ItemType "directory" # Equals "self"
         New-Item -Path . -Name "sdks" -ItemType "directory" # Equals "self"
         ls
         cd sdks
         New-Item -Path . -Name "CSharpSDK" -ItemType "directory" # Equals "self"
     pwsh: true
+
+#        New-Item -Path . -Name "SDKGenerator" -ItemType "directory" # Equals "self"
+#        New-Item -Path . -Name "API_Specs" -ItemType "directory" # Equals "self"
 
 - checkout: self
   clean: true

@@ -81,7 +81,7 @@ steps:
   displayName: set testTilteData local environment variable
 
 - script: |
-    echo testing 2 ($PF_TEST_TITLE_DATA_JSON)
+    echo testing 2 %PF_TEST_TITLE_DATA_JSON%
     ls
     cd s
     cd SDKGenerator/SDKBuildScripts/Windows
@@ -153,9 +153,9 @@ steps:
 
 - script: |
     cd sdks/CSharpSDK/PlayFabSDK/UnittestRunner/bin/Release/net45/
+    ls
     echo START UNIT TEST RUNNER .Net45
-    setx PF_TEST_TITLE_DATA_JSON '/d/a/1/s/JenkinsSdkSetupScripts/JenkinsSdkSetupScripts/Creds/testTitleData.json'
-    .\UnitTestRunner.exe -testInputsFile testTitleData.json
+    .\UnitTestRunner.exe -testInputsFile '.\testTitleData.json'
   displayName: 'dotNet 45 CSharpSDK UnitTestRunner'
 
 # - task: DotNetCoreCLI@2

@@ -1,7 +1,28 @@
-# Node.js
-# Build a general Node.js project with npm.
-# Add steps that analyze code, save build artifacts, deploy, and more:
-# https://docs.microsoft.com/azure/devops/pipelines/languages/javascript
+
+### NOTE: JenkinsSdkSetupScripts can't be in the root of this pipeline.
+resources:
+  repositories:
+  - repository: 'JenkinsSdkSetupScripts'
+    type: github
+    endpoint: 'GitHub connection MockVMAgent'
+    name: PlayFab/JenkinsSdkSetupScripts
+    path: s/JenkinsSdkSetupScripts
+    trigger:
+      - master
+  - repository: API_Specs
+    type: github
+    endpoint: 'GitHub connection MockVMAgent'
+    name: PlayFab/API_Specs
+    path: s/API_Specs
+    trigger:
+      - master
+  - repository: CSharpSDK
+    type: github
+    endpoint: 'GitHub connection MockVMAgent'
+    name: PlayFab/CSharpSDK
+    path: s/sdks/CSharpSDK
+    trigger:
+      - master
 
 trigger:
 - master
@@ -10,12 +31,104 @@ pool:
   vmImage: 'windows-latest'
 
 steps:
-- task: NodeTool@0
+
+- task: PowerShell@2
+  displayName: "Create folders for repos (workaround)"
   inputs:
-    versionSpec: '10.x'
-  displayName: 'Install Node.js'
+    targetType: inline
+    script: |
+        New-Item -Path . -Name "JenkinsSdkSetupScripts" -ItemType "directory"
+        New-Item -Path . -Name "sdks" -ItemType "directory"
+        New-Item -Path . -Name "SDKGenerator" -ItemType "directory"
+        New-Item -Path . -Name "API_Specs" -ItemType "directory"
+        ls
+        cd sdks
+        New-Item -Path . -Name "CSharpSDK" -ItemType "directory"
+    pwsh: true
+
+- checkout: self
+  clean: true
+  persistCredentials: true
+  path: s/SDKGenerator
+
+- checkout: API_Specs
+  clean: true
+  persistCredentials: true
+  path: s/API_Specs
+
+- checkout: JenkinsSdkSetupScripts
+  clean: true
+  persistCredentials: true
+  path: s/JenkinsSdkSetupScripts
+
+- checkout: CSharpSDK
+  clean: true
+  persistCredentials: true
+  path: s/sdks/CSharpSDK
+
+# - bash: |
+#     PF_TEST_TITLE_DATA_JSON="D:/a/1/s/JenkinsSdkSetupScripts/Creds/testTitleData.json"
+#     export PF_TEST_TITLE_DATA_JSON="$PF_TEST_TITLE_DATA_JSON"
+#     echo testing $PF_TEST_TITLE_DATA_JSON
+#     pwd
+#     ls
+#     cd ..
+#     pwd
+#     ls
+#   displayName: set testTilteData local environment variable
 
 - script: |
-    npm install
-    npm run build
-  displayName: 'npm install and build'
+    echo testing 2 %PF_TEST_TITLE_DATA_JSON%
+    pwd
+    ls
+    cd SDKGenerator/SDKBuildScripts/Windows
+    csharp_build.bat
+  displayName: 'Generating CSharpSDK'
+
+- task: NuGetCommand@2
+  displayName: 'Nuget Restore CSharpSDK UnitTest'
+  inputs:
+    command: 'restore'
+    restoreSolution: 'sdks/CSharpSDK/PlayFabSDK/PlayFabSDK+Unit.sln'
+    feedsToUse: 'select'
+
+- task: VSBuild@1
+  displayName: 'Build CSharpSDKUnitTest: Release'
+  inputs:
+    solution: 'sdks/CSharpSDK/PlayFabSDK/PlayFabSDK+Unit.sln'
+    configuration: 'Release'
+    clean: true
+    msbuildArchitecture: 'x64'
+
+- bash: |
+    echo bash pf title data is $PF_TEST_TITLE_DATA_JSON
+    if [ -f "$PF_TEST_TITLE_DATA_JSON" ]; then
+      echo pf test title file exists! according to bash
+    else
+      echo THE PF TITLE FILE DOES NOT EXIST
+    fi
+  displayName: Test For TestTitle Data Json 
+
+# note this doesn't seem to print anything out? 
+# without cmd <<< bash will not find dotnet (script didn't seem to work?)
+- bash: |
+    cd sdks/CSharpSDK/PlayFabSDK/UnittestRunner/bin/Release/netcoreapp2.0/
+    echo START NetCore 2.0 UNIT TEST RUNNER with this file: $PF_TEST_TITLE_DATA_JSON
+    cmd <<< dotnet .\UnitTestRunner.dll -testInputsFile '$PF_TEST_TITLE_DATA_JSON'
+  displayName: 'TEST BASH NetCore 2.0 CSharpSDK UnitTestRunner (expected blank)'
+
+# possible alternative to call a dll? Or we could try powershell?
+# - script: |
+#     cd sdks/CSharpSDK/PlayFabSDK/UnittestRunner/bin/Release/netcoreapp2.0/
+#     echo START NetCore 2.0 UNIT TEST RUNNER with this file: %PF_TEST_TITLE_DATA_JSON%
+#     dotnet .\UnitTestRunner.dll -testInputsFile '%PF_TEST_TITLE_DATA_JSON%'
+#   displayName: 'TEST SCRIPT NetCore 2.0 CSharpSDK UnitTestRunner'
+
+- bash: |
+    cd sdks/CSharpSDK/PlayFabSDK/UnittestRunner/bin/Release/net45/
+    pwd
+    ls
+    echo START .Net4.5 UNIT TEST RUNNER
+    echo windows script testing this var $PF_TEST_TITLE_DATA_JSON
+    cmd <<< UnitTestRunner.exe -testInputsFile '$PF_TEST_TITLE_DATA_JSON'
+  displayName: 'dotNet 45 CSharpSDK UnitTestRunner'

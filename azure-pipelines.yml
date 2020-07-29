@@ -156,7 +156,7 @@ steps:
     cd sdks/CSharpSDK/PlayFabSDK/UnittestRunner/bin/Release/net45/
     ls
     echo START UNIT TEST RUNNER .Net45
-    .\UnitTestRunner.exe -testInputsFile 'testTitleData.json'
+    .\UnitTestRunner.exe -testInputsFile '%PF_TEST_TITLE_DATA_JSON%'
   displayName: 'dotNet 45 CSharpSDK UnitTestRunner'
 
 # - task: DotNetCoreCLI@2

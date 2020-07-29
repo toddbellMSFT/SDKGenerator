@@ -122,12 +122,6 @@ steps:
     clean: true
     msbuildArchitecture: 'x64'
 
-- script: |
-    cd sdks/CSharpSDK/PlayFabSDK/UnittestRunner/bin/Release/netcoreapp2.0/
-    echo START UNIT TEST RUNNER
-    dotnet .\UnitTestRunner.dll -testInputsFile '%PF_TEST_TITLE_DATA_JSON%'
-  displayName: 'NetCore 2.0 CSharpSDK UnitTestRunner'
-
 # - script: |
 #     pwd
 #     ls
@@ -164,6 +158,12 @@ steps:
       echo THE PF TITLE FILE DOES NOT EXIST
     fi
   displayName: bash way
+
+- script: |
+    cd sdks/CSharpSDK/PlayFabSDK/UnittestRunner/bin/Release/netcoreapp2.0/
+    echo START UNIT TEST RUNNER
+    dotnet .\UnitTestRunner.dll -testInputsFile '%PF_TEST_TITLE_DATA_JSON%'
+  displayName: 'NetCore 2.0 CSharpSDK UnitTestRunner'
 
 - script: |
     cd sdks/CSharpSDK/PlayFabSDK/UnittestRunner/bin/Release/net45/

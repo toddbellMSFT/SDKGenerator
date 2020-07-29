@@ -59,7 +59,7 @@ steps:
 - checkout: JenkinsSdkSetupScripts
   clean: true
   persistCredentials: true
-  path: s
+  path: s/
 
 - checkout: CSharpSDK
   clean: true

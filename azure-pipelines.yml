@@ -159,11 +159,21 @@ steps:
     fi
   displayName: bash way
 
+- task: DotNetCoreCLI@2
+  displayName: 'CSharpSDK UnitTest Run'
+  inputs:
+    command: 'run'
+    projects: '../sdks/CSharpSDK/PlayFabSDK/UnittestRunner/bin/Release/netcoreapp2.0/UnittestRunner.dll'
+    arguments: '-o ../sdks/CSharpSDK/PlayFabSDK/UnittestRunner/bin/Release/netcoreapp2.0/ -testInputsFile %PF_TEST_TITLE_DATA_JSON%'
+    modifyOutputPath: true
+
 - bash: |
     cd sdks/CSharpSDK/PlayFabSDK/UnittestRunner/bin/Release/netcoreapp2.0/
-    echo START NetCore 2.0 UNIT TEST RUNNER with this file: 
+    echo START NetCore 2.0 UNIT TEST RUNNER with this file: $PF_TEST_TITLE_DATA_JSON
     dotnet .\UnitTestRunner.dll -testInputsFile '$PF_TEST_TITLE_DATA_JSON'
   displayName: 'NetCore 2.0 CSharpSDK UnitTestRunner'
+
+
 
 - script: |
     cd sdks/CSharpSDK/PlayFabSDK/UnittestRunner/bin/Release/net45/
@@ -173,11 +183,3 @@ steps:
     exit 1
     .\UnitTestRunner.exe -testInputsFile '%PF_TEST_TITLE_DATA_JSON%'
   displayName: 'dotNet 45 CSharpSDK UnitTestRunner'
-
-# - task: DotNetCoreCLI@2
-#   displayName: 'CSharpSDK UnitTest Run'
-#   inputs:
-#     command: 'run'
-#     projects: '../sdks/CSharpSDK/PlayFabSDK/UnittestRunner/bin/Release/netcoreapp2.0/UnittestRunner.dll'
-#     arguments: '-o ../sdks/CSharpSDK/PlayFabSDK/UnittestRunner/bin/Release/netcoreapp2.0/ -testInputsFile SYNCJENKINSADDTESTTITLEDATAJSON'
-#     modifyOutputPath: true

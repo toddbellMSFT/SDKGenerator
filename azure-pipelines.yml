@@ -82,6 +82,9 @@ steps:
     echo testing $PF_TEST_TITLE_DATA_JSON
     pwd
     ls
+    cd ..
+    pwd
+    ls
   displayName: set testTilteData local environment variable
 
 # - script: |

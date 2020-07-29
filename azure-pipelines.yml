@@ -107,12 +107,7 @@ steps:
     else
       echo THE PF TITLE FILE DOES NOT EXIST
     fi
-  displayName: BASH Test For TestTitle Data Json 
-
-- script: |
-    echo script pf test title data is %PF_TEST_TITLE_DATA_JSON%
-    Test-Path %TEST_TITLE_DATA_JSON%
-  displayName: script Test for TestTitleData Json
+  displayName: Test For TestTitle Data Json 
 
 # note this doesn't seem to print anything out? 
 # without cmd <<< bash will not find dotnet (script didn't seem to work?)

@@ -80,15 +80,17 @@ steps:
     PF_TEST_TITLE_DATA_JSON="D:/a/1/s/JenkinsSdkSetupScripts/Creds/testTitleData.json"
     export PF_TEST_TITLE_DATA_JSON="$PF_TEST_TITLE_DATA_JSON"
     echo testing $PF_TEST_TITLE_DATA_JSON
+    pwd
+    ls
   displayName: set testTilteData local environment variable
 
-- script: |
-    echo testing 2 %PF_TEST_TITLE_DATA_JSON%
-    ls
-    pwd
-    cd SDKGenerator/SDKBuildScripts/Windows
-    csharp_build.bat
-  displayName: 'Generating CSharpSDK'
+# - script: |
+#     echo testing 2 %PF_TEST_TITLE_DATA_JSON%
+#     pwd
+#     ls
+#     cd SDKGenerator/SDKBuildScripts/Windows
+#     csharp_build.bat
+#   displayName: 'Generating CSharpSDK'
 
 # - task: UseDotNet@2
 #   displayName: 'Use .NET Core 2.x sdk'

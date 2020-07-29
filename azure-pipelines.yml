@@ -159,16 +159,16 @@ steps:
     fi
   displayName: bash way
 
-- script: |
+- bash: |
     cd sdks/CSharpSDK/PlayFabSDK/UnittestRunner/bin/Release/netcoreapp2.0/
-    echo START UNIT TEST RUNNER
-    dotnet .\UnitTestRunner.dll -testInputsFile '%PF_TEST_TITLE_DATA_JSON%'
+    echo START NetCore 2.0 UNIT TEST RUNNER with this file: 
+    dotnet .\UnitTestRunner.dll -testInputsFile '$PF_TEST_TITLE_DATA_JSON'
   displayName: 'NetCore 2.0 CSharpSDK UnitTestRunner'
 
 - script: |
     cd sdks/CSharpSDK/PlayFabSDK/UnittestRunner/bin/Release/net45/
     ls
-    echo START UNIT TEST RUNNER .Net45
+    echo START .Net4.5 UNIT TEST RUNNER
     echo windows script testing this var %PF_TEST_TITLE_DATA_JSON%
     exit 1
     .\UnitTestRunner.exe -testInputsFile '%PF_TEST_TITLE_DATA_JSON%'

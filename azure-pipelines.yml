@@ -74,13 +74,13 @@ steps:
     npm run build
   displayName: 'npm install and build'
 
-- script: |
-    cd ..
-    pwd
-    ls
-  displayName: 'Cloning CSharpSDK for genConfig'
+- bash: |
+    WORKSPACE="$PWD"
+    PF_TEST_TITLE_DATA_JSON="$WORKSPACE/JenkinsSdkSetupScripts/JenkinsScripts/Creds/testTitleData.json"
+  displayName: set testTilteData local environment variable
 
 - script: |
+    echo testing %PF_TEST_TITLE_DATA_JSON%
     ls
     cd s
     cd SDKGenerator/SDKBuildScripts/Windows

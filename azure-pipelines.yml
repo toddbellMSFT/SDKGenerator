@@ -49,12 +49,12 @@ steps:
 - checkout: self
   clean: true
   persistCredentials: true
-  path: s/SDKGenerator
+  path: s/
 
 - checkout: API_Specs
   clean: true
   persistCredentials: true
-  path: s/API_Specs
+  path: s/
 
 - checkout: JenkinsSdkSetupScripts
   clean: true

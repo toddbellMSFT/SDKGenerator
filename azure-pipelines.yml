@@ -99,7 +99,7 @@ steps:
   displayName: 'Use .NET Core 2.0 sdk'
   inputs:
     packageType: sdk
-    version: 2.0
+    version: 2.2.x
     installationPath: $(Agent.ToolsDirectory)/dotnet
 
 # - script: |

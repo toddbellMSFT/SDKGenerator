@@ -84,7 +84,6 @@ steps:
     echo testing 2 %PF_TEST_TITLE_DATA_JSON%
     ls
     pwd
-    cd ..
     cd SDKGenerator/SDKBuildScripts/Windows
     csharp_build.bat
   displayName: 'Generating CSharpSDK'

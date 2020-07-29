@@ -36,7 +36,6 @@ steps:
   inputs:
     targetType: inline
     script: |
-        cd ..
         New-Item -Path . -Name "SDKGenerator" -ItemType "directory" # Equals "self"
         New-Item -Path . -Name "JenkinsSdkSetupScripts" -ItemType "directory" # Equals "self"
         New-Item -Path . -Name "API_Specs" -ItemType "directory" # Equals "self"

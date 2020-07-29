@@ -163,8 +163,8 @@ steps:
   displayName: 'CSharpSDK UnitTest Run'
   inputs:
     command: 'run'
-    projects: '../sdks/CSharpSDK/PlayFabSDK/UnittestRunner/bin/Release/netcoreapp2.0/UnittestRunner.dll'
-    arguments: '-o ../sdks/CSharpSDK/PlayFabSDK/UnittestRunner/bin/Release/netcoreapp2.0/ -testInputsFile %PF_TEST_TITLE_DATA_JSON%'
+    projects: '/sdks/CSharpSDK/PlayFabSDK/UnittestRunner/bin/Release/netcoreapp2.0/UnittestRunner.dll'
+    arguments: '-o /sdks/CSharpSDK/PlayFabSDK/UnittestRunner/bin/Release/netcoreapp2.0/ -testInputsFile %PF_TEST_TITLE_DATA_JSON%'
     modifyOutputPath: true
 
 - bash: |

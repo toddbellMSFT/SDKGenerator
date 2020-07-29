@@ -87,100 +87,99 @@ steps:
     ls
   displayName: set testTilteData local environment variable
 
-# - script: |
-#     echo testing 2 %PF_TEST_TITLE_DATA_JSON%
-#     pwd
-#     ls
-#     cd SDKGenerator/SDKBuildScripts/Windows
-#     csharp_build.bat
-#   displayName: 'Generating CSharpSDK'
+- script: |
+    echo testing 2 %PF_TEST_TITLE_DATA_JSON%
+    pwd
+    ls
+    cd SDKGenerator/SDKBuildScripts/Windows
+    csharp_build.bat
+  displayName: 'Generating CSharpSDK'
 
-# - task: UseDotNet@2
-#   displayName: 'Use .NET Core 2.x sdk'
-#   inputs:
-#     packageType: sdk
-#     version: 2.x
-#     installationPath: $(Agent.ToolsDirectory)/dotnet
-
-# # - script: |
-# #     echo SANITY CHECK FOR PREVIOUS DOT NET CHANGE
-# #     dotnet --list-sdks
-# #   displayName: 'looking for dot net version'
-
-# - task: NuGetCommand@2
-#   displayName: 'Nuget Restore CSharpSDK UnitTest'
-#   inputs:
-#     command: 'restore'
-#     restoreSolution: 'sdks/CSharpSDK/PlayFabSDK/PlayFabSDK+Unit.sln'
-#     feedsToUse: 'select'
-
-# - task: VSBuild@1
-#   displayName: 'Build CSharpSDKUnitTest: Release'
-#   inputs:
-#     solution: 'sdks/CSharpSDK/PlayFabSDK/PlayFabSDK+Unit.sln'
-#     configuration: 'Release'
-#     clean: true
-#     msbuildArchitecture: 'x64'
-
-# # - script: |
-# #     cd sdks/CSharpSDK/PlayFabSDK/UnittestRunner/bin/Release/netcoreapp2.0/
-# #     echo START UNIT TEST RUNNER
-# #     setx PF_TEST_TITLE_DATA_JSON 'D:\a\1\s\JenkinsSdkSetupScripts\Creds\testTitleData.json'
-# #     cp 'D:\a\1\s\JenkinsSdkSetupScripts\Creds\testTitleData.json' D:\a\1\s\sdks\CSharpSDK\PlayFabSDK\UnittestRunner\bin\Release\netcoreapp2.0\testTilteData.json
-# #     dotnet .\UnitTestRunner.dll -testInputsFile '%PF_TEST_TITLE_DATA_JSON%'
-# #   displayName: 'NetCore 2.0 CSharpSDK UnitTestRunner'
+- task: UseDotNet@2
+  displayName: 'Use .NET Core 2.x sdk'
+  inputs:
+    packageType: sdk
+    version: 2.x
+    installationPath: $(Agent.ToolsDirectory)/dotnet
 
 # - script: |
-#     pwd
-#     ls
-#     cd JenkinsSdkSetupScripts/Creds
-#     pwd
-#     ls
-#     echo copying file
-#     cp testTitleData.json D:\a\1\s\sdks\CSharpSDK\PlayFabSDK\UnittestRunner\bin\Release\net45\testTilteData.json
-#     echo file should be there now
-#     cd ../../..
-#     ls
-#     cd sdks
-#     pwd
-#     cd CSharpSDK
-#     pwd
-#     cd PlayFabSDK
-#     pwd
-#     cd UnitTestRunner
-#     pwd
-#     cd bin
-#     pwd
-#     cd Release
-#     pwd
-#     cd net45
-#     pwd
-#     ls
-#   displayName: copy TestTitleData.json
+#     echo SANITY CHECK FOR PREVIOUS DOT NET CHANGE
+#     dotnet --list-sdks
+#   displayName: 'looking for dot net version'
 
-# - bash: |
-#     echo bash pf title data is $PF_TEST_TITLE_DATA_JSON
-#     if [ -f "$PF_TEST_TITLE_DATA_JSON" ]; then
-#       echo pf test title file exists! according to bash
-#     else
-#       echo THE PF TITLE FILE DOES NOT EXIST
-#     fi
-#   displayName: bash way
+- task: NuGetCommand@2
+  displayName: 'Nuget Restore CSharpSDK UnitTest'
+  inputs:
+    command: 'restore'
+    restoreSolution: 'sdks/CSharpSDK/PlayFabSDK/PlayFabSDK+Unit.sln'
+    feedsToUse: 'select'
+
+- task: VSBuild@1
+  displayName: 'Build CSharpSDKUnitTest: Release'
+  inputs:
+    solution: 'sdks/CSharpSDK/PlayFabSDK/PlayFabSDK+Unit.sln'
+    configuration: 'Release'
+    clean: true
+    msbuildArchitecture: 'x64'
 
 # - script: |
-#     cd sdks/CSharpSDK/PlayFabSDK/UnittestRunner/bin/Release/net45/
-#     ls
-#     echo START UNIT TEST RUNNER .Net45
-#     echo windows script testing this var %PF_TEST_TITLE_DATA_JSON%
-#     exit 1
-#     .\UnitTestRunner.exe -testInputsFile '%PF_TEST_TITLE_DATA_JSON%'
-#   displayName: 'dotNet 45 CSharpSDK UnitTestRunner'
+#     cd sdks/CSharpSDK/PlayFabSDK/UnittestRunner/bin/Release/netcoreapp2.0/
+#     echo START UNIT TEST RUNNER
+#     setx PF_TEST_TITLE_DATA_JSON 'D:\a\1\s\JenkinsSdkSetupScripts\Creds\testTitleData.json'
+#     cp 'D:\a\1\s\JenkinsSdkSetupScripts\Creds\testTitleData.json' D:\a\1\s\sdks\CSharpSDK\PlayFabSDK\UnittestRunner\bin\Release\netcoreapp2.0\testTilteData.json
+#     dotnet .\UnitTestRunner.dll -testInputsFile '%PF_TEST_TITLE_DATA_JSON%'
+#   displayName: 'NetCore 2.0 CSharpSDK UnitTestRunner'
 
-# # - task: DotNetCoreCLI@2
-# #   displayName: 'CSharpSDK UnitTest Run'
-# #   inputs:
-# #     command: 'run'
-# #     projects: '../sdks/CSharpSDK/PlayFabSDK/UnittestRunner/bin/Release/netcoreapp2.0/UnittestRunner.dll'
-# #     arguments: '-o ../sdks/CSharpSDK/PlayFabSDK/UnittestRunner/bin/Release/netcoreapp2.0/ -testInputsFile SYNCJENKINSADDTESTTITLEDATAJSON'
-# #     modifyOutputPath: true
+- script: |
+    pwd
+    ls
+    cd JenkinsSdkSetupScripts/Creds
+    pwd
+    ls
+    echo copying file
+    cp testTitleData.json D:\a\1\s\sdks\CSharpSDK\PlayFabSDK\UnittestRunner\bin\Release\net45\testTilteData.json
+    echo file should be there now
+    cd ../../..
+    ls
+    cd sdks
+    pwd
+    cd CSharpSDK
+    pwd
+    cd PlayFabSDK
+    pwd
+    cd UnitTestRunner
+    pwd
+    cd bin
+    pwd
+    cd Release
+    pwd
+    cd net45
+    pwd
+    ls
+  displayName: copy TestTitleData.json
 
+- bash: |
+    echo bash pf title data is $PF_TEST_TITLE_DATA_JSON
+    if [ -f "$PF_TEST_TITLE_DATA_JSON" ]; then
+      echo pf test title file exists! according to bash
+    else
+      echo THE PF TITLE FILE DOES NOT EXIST
+    fi
+  displayName: bash way
+
+- script: |
+    cd sdks/CSharpSDK/PlayFabSDK/UnittestRunner/bin/Release/net45/
+    ls
+    echo START UNIT TEST RUNNER .Net45
+    echo windows script testing this var %PF_TEST_TITLE_DATA_JSON%
+    exit 1
+    .\UnitTestRunner.exe -testInputsFile '%PF_TEST_TITLE_DATA_JSON%'
+  displayName: 'dotNet 45 CSharpSDK UnitTestRunner'
+
+# - task: DotNetCoreCLI@2
+#   displayName: 'CSharpSDK UnitTest Run'
+#   inputs:
+#     command: 'run'
+#     projects: '../sdks/CSharpSDK/PlayFabSDK/UnittestRunner/bin/Release/netcoreapp2.0/UnittestRunner.dll'
+#     arguments: '-o ../sdks/CSharpSDK/PlayFabSDK/UnittestRunner/bin/Release/netcoreapp2.0/ -testInputsFile SYNCJENKINSADDTESTTITLEDATAJSON'
+#     modifyOutputPath: true

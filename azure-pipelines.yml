@@ -46,7 +46,6 @@ steps:
         New-Item -Path . -Name "CSharpSDK" -ItemType "directory"
     pwsh: true
 
-
 - checkout: self
   clean: true
   persistCredentials: true
@@ -67,26 +66,16 @@ steps:
   persistCredentials: true
   path: s/sdks/CSharpSDK
 
-# - task: NodeTool@0
-#   inputs:
-#     versionSpec: '10.x'
-#   displayName: 'Install Node.js'
-
-# - script: |
-#     npm install
-#     npm run build
-#   displayName: 'npm install and build'
-
-- bash: |
-    PF_TEST_TITLE_DATA_JSON="D:/a/1/s/JenkinsSdkSetupScripts/Creds/testTitleData.json"
-    export PF_TEST_TITLE_DATA_JSON="$PF_TEST_TITLE_DATA_JSON"
-    echo testing $PF_TEST_TITLE_DATA_JSON
-    pwd
-    ls
-    cd ..
-    pwd
-    ls
-  displayName: set testTilteData local environment variable
+# - bash: |
+#     PF_TEST_TITLE_DATA_JSON="D:/a/1/s/JenkinsSdkSetupScripts/Creds/testTitleData.json"
+#     export PF_TEST_TITLE_DATA_JSON="$PF_TEST_TITLE_DATA_JSON"
+#     echo testing $PF_TEST_TITLE_DATA_JSON
+#     pwd
+#     ls
+#     cd ..
+#     pwd
+#     ls
+#   displayName: set testTilteData local environment variable
 
 - script: |
     echo testing 2 %PF_TEST_TITLE_DATA_JSON%
@@ -95,12 +84,6 @@ steps:
     cd SDKGenerator/SDKBuildScripts/Windows
     csharp_build.bat
   displayName: 'Generating CSharpSDK'
-
-
-# - script: |
-#     echo SANITY CHECK FOR PREVIOUS DOT NET CHANGE
-#     dotnet --list-sdks
-#   displayName: 'looking for dot net version'
 
 - task: NuGetCommand@2
   displayName: 'Nuget Restore CSharpSDK UnitTest'
@@ -117,34 +100,6 @@ steps:
     clean: true
     msbuildArchitecture: 'x64'
 
-# - script: |
-#     pwd
-#     ls
-#     cd JenkinsSdkSetupScripts/Creds
-#     pwd
-#     ls
-#     echo copying file
-#     cp testTitleData.json D:\a\1\s\sdks\CSharpSDK\PlayFabSDK\UnittestRunner\bin\Release\net45\testTilteData.json
-#     echo file should be there now
-#     cd ../../..
-#     ls
-#     cd sdks
-#     pwd
-#     cd CSharpSDK
-#     pwd
-#     cd PlayFabSDK
-#     pwd
-#     cd UnitTestRunner
-#     pwd
-#     cd bin
-#     pwd
-#     cd Release
-#     pwd
-#     cd net45
-#     pwd
-#     ls
-#   displayName: copy TestTitleData.json
-
 - bash: |
     echo bash pf title data is $PF_TEST_TITLE_DATA_JSON
     if [ -f "$PF_TEST_TITLE_DATA_JSON" ]; then
@@ -152,13 +107,26 @@ steps:
     else
       echo THE PF TITLE FILE DOES NOT EXIST
     fi
-  displayName: bash way
+  displayName: BASH Test For TestTitle Data Json 
 
+- script: |
+    echo script pf test title data is %PF_TEST_TITLE_DATA_JSON%
+    Test-Path %TEST_TITLE_DATA_JSON%
+  displayName: script Test for TestTitleData Json
+
+# note this doesn't seem to print anything out? 
+# without cmd <<< bash will not find dotnet (script didn't seem to work?)
 - bash: |
     cd sdks/CSharpSDK/PlayFabSDK/UnittestRunner/bin/Release/netcoreapp2.0/
     echo START NetCore 2.0 UNIT TEST RUNNER with this file: $PF_TEST_TITLE_DATA_JSON
     cmd <<< dotnet .\UnitTestRunner.dll -testInputsFile '$PF_TEST_TITLE_DATA_JSON'
-  displayName: 'NetCore 2.0 CSharpSDK UnitTestRunner'
+  displayName: 'TEST BASH NetCore 2.0 CSharpSDK UnitTestRunner (expected blank)'
+
+- script: |
+    cd sdks/CSharpSDK/PlayFabSDK/UnittestRunner/bin/Release/netcoreapp2.0/
+    echo START NetCore 2.0 UNIT TEST RUNNER with this file: $PF_TEST_TITLE_DATA_JSON
+    dotnet .\UnitTestRunner.dll -testInputsFile '$PF_TEST_TITLE_DATA_JSON'
+  displayName: 'TEST SCRIPT NetCore 2.0 CSharpSDK UnitTestRunner'
 
 - bash: |
     cd sdks/CSharpSDK/PlayFabSDK/UnittestRunner/bin/Release/net45/
@@ -168,27 +136,3 @@ steps:
     echo windows script testing this var $PF_TEST_TITLE_DATA_JSON
     cmd <<< UnitTestRunner.exe -testInputsFile '$PF_TEST_TITLE_DATA_JSON'
   displayName: 'dotNet 45 CSharpSDK UnitTestRunner'
-
-### This doesn' seem to work:
-### Info: .NET Core SDK/runtime 2.2 and 3.0 are now End of Life(EOL) and have been removed from all hosted agents. If you're using these SDK/runtimes on hosted agents, kindly upgrade to newer versions which are not EOL, or else use UseDotNet task to install the required version.
-### Info: Azure Pipelines hosted agents have been updated to contain .Net Core 3.x (3.1) SDK/Runtime along with 2.1. Unless you have locked down a SDK version for your project(s), 3.x SDK might be picked up which might have breaking behavior as compared to previous versions. 
-### Some commonly encountered changes are: 
-### If you're using `Publish` command with -o or --Output argument, you will see that the output folder is now being created at root directory rather than Project File's directory. To learn about more such changes and troubleshoot, refer here: https://docs.microsoft.com/en-us/azure/devops/pipelines/tasks/build/dotnet-core-cli?view=azure-devops#troubleshooting
-### ##[error]Project file(s) matching the specified pattern were not found.
-### Finishing: CSharpSDK UnitTest Run
-
-# # - task: UseDotNet@2
-# #   displayName: 'Use .NET Core 2.0 sdk'
-# #   inputs:
-# #     packageType: sdk
-# #     version: 2.2.x
-# #     installationPath: $(Agent.ToolsDirectory)/dotnet
-
-# # - task: DotNetCoreCLI@2
-# #   displayName: 'CSharpSDK UnitTest Run'
-# #   inputs:
-# #     command: 'run'
-# #     projects: '/sdks/CSharpSDK/PlayFabSDK/UnittestRunner/bin/Release/netcoreapp2.0/UnittestRunner.dll'
-# #     arguments: '-o /sdks/CSharpSDK/PlayFabSDK/UnittestRunner/bin/Release/netcoreapp2.0/ -testInputsFile %PF_TEST_TITLE_DATA_JSON%'
-# #     modifyOutputPath: true
-######

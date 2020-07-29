@@ -41,6 +41,7 @@ steps:
         New-Item -Path . -Name "JenkinsSdkSetupScripts" -ItemType "directory" # Equals "self"
         New-Item -Path . -Name "API_Specs" -ItemType "directory" # Equals "self"
         New-Item -Path . -Name "sdks" -ItemType "directory" # Equals "self"
+        ls
         cd sdks
         New-Item -Path . -Name "CSharpSDK" -ItemType "directory" # Equals "self"
     pwsh: true
@@ -65,15 +66,15 @@ steps:
   persistCredentials: true
   path: s/sdks/CSharpSDK
 
-# - task: NodeTool@0
-#   inputs:
-#     versionSpec: '10.x'
-#   displayName: 'Install Node.js'
+- task: NodeTool@0
+  inputs:
+    versionSpec: '10.x'
+  displayName: 'Install Node.js'
 
-# - script: |
-#     npm install
-#     npm run build
-#   displayName: 'npm install and build'
+- script: |
+    npm install
+    npm run build
+  displayName: 'npm install and build'
 
 - bash: |
     PF_TEST_TITLE_DATA_JSON="D:/a/1/s/JenkinsSdkSetupScripts/Creds/testTitleData.json"

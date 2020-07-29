@@ -85,7 +85,7 @@ steps:
     ls
     cd s
     cd SDKGenerator/SDKBuildScripts/Windows
-    ./csharp_build.bat
+    csharp_build.bat
   displayName: 'Generating CSharpSDK'
 
 - task: UseDotNet@2

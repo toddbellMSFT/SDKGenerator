@@ -57,7 +57,7 @@ steps:
 - checkout: JenkinsSdkSetupScripts
   clean: true
   persistCredentials: true
-  path: s/JenkinsSdkSetupScripts
+  path: s
 
 - checkout: CSharpSDK
   clean: true
@@ -76,7 +76,7 @@ steps:
 
 - bash: |
     WORKSPACE="$PWD"
-    PF_TEST_TITLE_DATA_JSON="D:/a/1/s/JenkinsSdkSetupScripts/JenkinsSdkSetupScripts/Creds/testTitleData.json"
+    PF_TEST_TITLE_DATA_JSON="D:/a/1/s/JenkinsSdkSetupScripts/Creds/testTitleData.json"
     export PF_TEST_TITLE_DATA_JSON="$PF_TEST_TITLE_DATA_JSON"
     echo testing $PF_TEST_TITLE_DATA_JSON
   displayName: set testTilteData local environment variable
@@ -119,15 +119,15 @@ steps:
 # - script: |
 #     cd sdks/CSharpSDK/PlayFabSDK/UnittestRunner/bin/Release/netcoreapp2.0/
 #     echo START UNIT TEST RUNNER
-#     setx PF_TEST_TITLE_DATA_JSON 'D:\a\1\s\JenkinsSdkSetupScripts\JenkinsSdkSetupScripts\Creds\testTitleData.json'
-#     cp 'D:\a\1\s\JenkinsSdkSetupScripts\JenkinsSdkSetupScripts\Creds\testTitleData.json' D:\a\1\s\sdks\CSharpSDK\PlayFabSDK\UnittestRunner\bin\Release\netcoreapp2.0\testTilteData.json
+#     setx PF_TEST_TITLE_DATA_JSON 'D:\a\1\s\JenkinsSdkSetupScripts\Creds\testTitleData.json'
+#     cp 'D:\a\1\s\JenkinsSdkSetupScripts\Creds\testTitleData.json' D:\a\1\s\sdks\CSharpSDK\PlayFabSDK\UnittestRunner\bin\Release\netcoreapp2.0\testTilteData.json
 #     dotnet .\UnitTestRunner.dll -testInputsFile testTitleData.json
 #   displayName: 'NetCore 2.0 CSharpSDK UnitTestRunner'
 
 - script: |
     pwd
     ls
-    cd JenkinsSdkSetupScripts/JenkinsSdkSetupScripts/Creds
+    cd JenkinsSdkSetupScripts/Creds
     pwd
     ls
     echo copying file

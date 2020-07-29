@@ -96,10 +96,10 @@ steps:
   displayName: 'Generating CSharpSDK'
 
 - task: UseDotNet@2
-  displayName: 'Use .NET Core 2.x sdk'
+  displayName: 'Use .NET Core 2.0 sdk'
   inputs:
     packageType: sdk
-    version: 2.x
+    version: 2.0
     installationPath: $(Agent.ToolsDirectory)/dotnet
 
 # - script: |

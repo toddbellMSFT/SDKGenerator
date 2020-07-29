@@ -45,25 +45,25 @@ steps:
         New-Item -Path . -Name "CSharpSDK" -ItemType "directory" # Equals "self"
     pwsh: true
 
-# - checkout: self
-#   clean: true
-#   persistCredentials: true
-#   path: s/SDKGenerator
+- checkout: self
+  clean: true
+  persistCredentials: true
+  path: s/SDKGenerator
 
-# - checkout: API_Specs
-#   clean: true
-#   persistCredentials: true
-#   path: s/API_Specs
+- checkout: API_Specs
+  clean: true
+  persistCredentials: true
+  path: s/API_Specs
 
-# - checkout: JenkinsSdkSetupScripts
-#   clean: true
-#   persistCredentials: true
-#   path: s
+- checkout: JenkinsSdkSetupScripts
+  clean: true
+  persistCredentials: true
+  path: s
 
-# - checkout: CSharpSDK
-#   clean: true
-#   persistCredentials: true
-#   path: s/sdks/CSharpSDK
+- checkout: CSharpSDK
+  clean: true
+  persistCredentials: true
+  path: s/sdks/CSharpSDK
 
 # - task: NodeTool@0
 #   inputs:

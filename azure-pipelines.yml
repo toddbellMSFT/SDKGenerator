@@ -162,10 +162,11 @@ steps:
 
 - bash: |
     cd sdks/CSharpSDK/PlayFabSDK/UnittestRunner/bin/Release/net45/
+    pwd
     ls
     echo START .Net4.5 UNIT TEST RUNNER
-    echo windows script testing this var %PF_TEST_TITLE_DATA_JSON%
-    .\UnitTestRunner.exe -testInputsFile '%PF_TEST_TITLE_DATA_JSON%'
+    echo windows script testing this var $PF_TEST_TITLE_DATA_JSON
+    .\UnitTestRunner.exe -testInputsFile '$PF_TEST_TITLE_DATA_JSON'
   displayName: 'dotNet 45 CSharpSDK UnitTestRunner'
 
 ### This doesn' seem to work:

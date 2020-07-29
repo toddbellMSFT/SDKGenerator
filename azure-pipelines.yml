@@ -36,13 +36,13 @@ steps:
   inputs:
     targetType: inline
     script: |
-        New-Item -Path . -Name "JenkinsSdkSetupScripts" -ItemType "directory" # Equals "self"
-        New-Item -Path . -Name "sdks" -ItemType "directory" # Equals "self"
-        New-Item -Path . -Name "SDKGenerator" -ItemType "directory" # Equals "self"
-        New-Item -Path . -Name "API_Specs" -ItemType "directory" # Equals "self"
+        New-Item -Path . -Name "JenkinsSdkSetupScripts" -ItemType "directory"
+        New-Item -Path . -Name "sdks" -ItemType "directory"
+        New-Item -Path . -Name "SDKGenerator" -ItemType "directory"
+        New-Item -Path . -Name "API_Specs" -ItemType "directory"
         ls
         cd sdks
-        New-Item -Path . -Name "CSharpSDK" -ItemType "directory" # Equals "self"
+        New-Item -Path . -Name "CSharpSDK" -ItemType "directory"
     pwsh: true
 
 

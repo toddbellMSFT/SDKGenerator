@@ -117,11 +117,12 @@ steps:
     cmd <<< dotnet .\UnitTestRunner.dll -testInputsFile '$PF_TEST_TITLE_DATA_JSON'
   displayName: 'TEST BASH NetCore 2.0 CSharpSDK UnitTestRunner (expected blank)'
 
-- script: |
-    cd sdks/CSharpSDK/PlayFabSDK/UnittestRunner/bin/Release/netcoreapp2.0/
-    echo START NetCore 2.0 UNIT TEST RUNNER with this file: %PF_TEST_TITLE_DATA_JSON%
-    dotnet .\UnitTestRunner.dll -testInputsFile '%PF_TEST_TITLE_DATA_JSON%'
-  displayName: 'TEST SCRIPT NetCore 2.0 CSharpSDK UnitTestRunner'
+# possible alternative to call a dll? Or we could try powershell?
+# - script: |
+#     cd sdks/CSharpSDK/PlayFabSDK/UnittestRunner/bin/Release/netcoreapp2.0/
+#     echo START NetCore 2.0 UNIT TEST RUNNER with this file: %PF_TEST_TITLE_DATA_JSON%
+#     dotnet .\UnitTestRunner.dll -testInputsFile '%PF_TEST_TITLE_DATA_JSON%'
+#   displayName: 'TEST SCRIPT NetCore 2.0 CSharpSDK UnitTestRunner'
 
 - bash: |
     cd sdks/CSharpSDK/PlayFabSDK/UnittestRunner/bin/Release/net45/

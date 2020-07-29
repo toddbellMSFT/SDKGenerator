@@ -30,10 +30,6 @@ pool:
   vmImage: 'windows-latest'
 
 steps:
-- checkout: self
-  clean: true
-  persistCredentials: true
-  path: s/SDKGenerator
 
 - task: PowerShell@2
   displayName: "Create folders for repos (workaround)"
@@ -48,6 +44,11 @@ steps:
         cd sdks
         New-Item -Path . -Name "CSharpSDK" -ItemType "directory" # Equals "self"
     pwsh: true
+
+- checkout: self
+  clean: true
+  persistCredentials: true
+  path: s/SDKGenerator
 
 - checkout: API_Specs
   clean: true

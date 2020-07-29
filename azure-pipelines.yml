@@ -12,14 +12,14 @@ resources:
     type: github
     endpoint: 'GitHub connection MockVMAgent'
     name: PlayFab/API_Specs
-    path: ./API_Specs
+    path: s/API_Specs
     trigger:
       - master
   - repository: CSharpSDK
     type: github
     endpoint: 'GitHub connection MockVMAgent'
     name: PlayFab/CSharpSDK
-    path: ./sdks/
+    path: s/sdks/
     trigger:
       - master
 

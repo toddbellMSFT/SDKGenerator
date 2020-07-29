@@ -1,4 +1,5 @@
 
+### NOTE: JenkinsSdkSetupScripts can't be in the root of this pipeline.
 resources:
   repositories:
   - repository: 'JenkinsSdkSetupScripts'
@@ -95,12 +96,6 @@ steps:
     csharp_build.bat
   displayName: 'Generating CSharpSDK'
 
-- task: UseDotNet@2
-  displayName: 'Use .NET Core 2.0 sdk'
-  inputs:
-    packageType: sdk
-    version: 2.2.x
-    installationPath: $(Agent.ToolsDirectory)/dotnet
 
 # - script: |
 #     echo SANITY CHECK FOR PREVIOUS DOT NET CHANGE
@@ -159,27 +154,40 @@ steps:
     fi
   displayName: bash way
 
-- task: DotNetCoreCLI@2
-  displayName: 'CSharpSDK UnitTest Run'
-  inputs:
-    command: 'run'
-    projects: '/sdks/CSharpSDK/PlayFabSDK/UnittestRunner/bin/Release/netcoreapp2.0/UnittestRunner.dll'
-    arguments: '-o /sdks/CSharpSDK/PlayFabSDK/UnittestRunner/bin/Release/netcoreapp2.0/ -testInputsFile %PF_TEST_TITLE_DATA_JSON%'
-    modifyOutputPath: true
+# - bash: |
+#     cd sdks/CSharpSDK/PlayFabSDK/UnittestRunner/bin/Release/netcoreapp2.0/
+#     echo START NetCore 2.0 UNIT TEST RUNNER with this file: $PF_TEST_TITLE_DATA_JSON
+#     dotnet .\UnitTestRunner.dll -testInputsFile '$PF_TEST_TITLE_DATA_JSON'
+#   displayName: 'NetCore 2.0 CSharpSDK UnitTestRunner'
 
 - bash: |
-    cd sdks/CSharpSDK/PlayFabSDK/UnittestRunner/bin/Release/netcoreapp2.0/
-    echo START NetCore 2.0 UNIT TEST RUNNER with this file: $PF_TEST_TITLE_DATA_JSON
-    dotnet .\UnitTestRunner.dll -testInputsFile '$PF_TEST_TITLE_DATA_JSON'
-  displayName: 'NetCore 2.0 CSharpSDK UnitTestRunner'
-
-
-
-- script: |
     cd sdks/CSharpSDK/PlayFabSDK/UnittestRunner/bin/Release/net45/
     ls
     echo START .Net4.5 UNIT TEST RUNNER
     echo windows script testing this var %PF_TEST_TITLE_DATA_JSON%
-    exit 1
     .\UnitTestRunner.exe -testInputsFile '%PF_TEST_TITLE_DATA_JSON%'
   displayName: 'dotNet 45 CSharpSDK UnitTestRunner'
+
+### This doesn' seem to work:
+### Info: .NET Core SDK/runtime 2.2 and 3.0 are now End of Life(EOL) and have been removed from all hosted agents. If you're using these SDK/runtimes on hosted agents, kindly upgrade to newer versions which are not EOL, or else use UseDotNet task to install the required version.
+### Info: Azure Pipelines hosted agents have been updated to contain .Net Core 3.x (3.1) SDK/Runtime along with 2.1. Unless you have locked down a SDK version for your project(s), 3.x SDK might be picked up which might have breaking behavior as compared to previous versions. 
+### Some commonly encountered changes are: 
+### If you're using `Publish` command with -o or --Output argument, you will see that the output folder is now being created at root directory rather than Project File's directory. To learn about more such changes and troubleshoot, refer here: https://docs.microsoft.com/en-us/azure/devops/pipelines/tasks/build/dotnet-core-cli?view=azure-devops#troubleshooting
+### ##[error]Project file(s) matching the specified pattern were not found.
+### Finishing: CSharpSDK UnitTest Run
+
+# # - task: UseDotNet@2
+# #   displayName: 'Use .NET Core 2.0 sdk'
+# #   inputs:
+# #     packageType: sdk
+# #     version: 2.2.x
+# #     installationPath: $(Agent.ToolsDirectory)/dotnet
+
+# # - task: DotNetCoreCLI@2
+# #   displayName: 'CSharpSDK UnitTest Run'
+# #   inputs:
+# #     command: 'run'
+# #     projects: '/sdks/CSharpSDK/PlayFabSDK/UnittestRunner/bin/Release/netcoreapp2.0/UnittestRunner.dll'
+# #     arguments: '-o /sdks/CSharpSDK/PlayFabSDK/UnittestRunner/bin/Release/netcoreapp2.0/ -testInputsFile %PF_TEST_TITLE_DATA_JSON%'
+# #     modifyOutputPath: true
+######

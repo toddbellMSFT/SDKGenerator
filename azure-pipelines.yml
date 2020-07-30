@@ -140,5 +140,6 @@ steps:
     PROJECTPATH="c:\\${JOB_NAME}_${EXECUTOR_NUMBER}_PP"
     XTA="$SDKBUILDSCRIPTS/AppCenterUITestLauncher/AppCenterUITestLauncher/debugassemblies"
     cd "JenkinsSdkSetupScripts/JenkinsSdkSetupScripts/JenkinsScripts/Pipeline"
+    echo === TESTING PF_TEST_TITLE_DATA: $PF_TEST_TITLE_DATA_JSON
     . ./xamarin_buildAppCenterTestAndroid.sh "$XTA" "$PROJECTPATH"
-  displayName: 'AppCenter Script'
+  displayName: 'AppCenter Script' 

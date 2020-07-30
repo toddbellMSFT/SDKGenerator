@@ -135,6 +135,9 @@ steps:
   
 - bash: |
     echo === Build and Test Xamarin for Android ===
+    echo == hack for xamarin script ==
+    cp $PF_TEST_TITLE_DATA_JSON  "sdks/CSharpSDK/XamarinTestRunner/XamarinTestRunner/testTitleData.json"
+    echo == end hack for xamarin script == 
     WORKSPACE="$PWD/JenkinsSdkSetupScripts"
     SHORT_WORKSPACE="$PWD"
     SDKBUILDSCRIPTS="SDKGenerator/SDKBuildScripts/"

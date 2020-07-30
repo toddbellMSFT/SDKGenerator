@@ -132,3 +132,13 @@ steps:
     echo windows script testing this var $PF_TEST_TITLE_DATA_JSON
     cmd <<< UnitTestRunner.exe -testInputsFile '$PF_TEST_TITLE_DATA_JSON'
   displayName: 'dotNet 45 CSharpSDK UnitTestRunner'
+  
+- bash: |
+    echo === Build and Test Xamarin for Android ===
+    SHORT_WORKSPACE="c:\\${JOB_NAME}_${EXECUTOR_NUMBER}"
+    SDKBUILDSCRIPTS="c:\\${JOB_NAME}_${EXECUTOR_NUMBER}_BS"
+    PROJECTPATH="c:\\${JOB_NAME}_${EXECUTOR_NUMBER}_PP"
+    XTA="$SDKBUILDSCRIPTS/AppCenterUITestLauncher/AppCenterUITestLauncher/debugassemblies"
+    cd "JenkinsSdkSetupScripts/JenkinsSdkSetupScripts/JenkinsScripts/Pipeline"
+    . ./xamarin_buildAppCenterTestAndroid.sh "$XTA" "$PROJECTPATH"
+  displayName: 'AppCenter Script'

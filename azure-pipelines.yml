@@ -138,7 +138,7 @@ steps:
     WORKSPACE="$PWD/JenkinsSdkSetupScripts"
     SHORT_WORKSPACE="$PWD"
     SDKBUILDSCRIPTS="SDKGenerator/SDKBuildScripts/"
-    PROJECTPATH="sdks/CSharp/"
+    PROJECTPATH="sdks/CSharp"
     XTA="$SDKBUILDSCRIPTS/AppCenterUITestLauncher/AppCenterUITestLauncher/debugassemblies"
     cd "JenkinsSdkSetupScripts/JenkinsSdkSetupScripts/JenkinsScripts/Pipeline"
     echo === TESTING PF_TEST_TITLE_DATA: $PF_TEST_TITLE_DATA_JSON

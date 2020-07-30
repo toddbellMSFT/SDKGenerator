@@ -135,6 +135,7 @@ steps:
   
 - bash: |
     echo === Build and Test Xamarin for Android ===
+    WORKSPACE="$PWD/JenkinsSdkSetupScripts"
     SHORT_WORKSPACE="$PWD"
     SDKBUILDSCRIPTS="SDKGenerator/SDKBuildScripts/"
     PROJECTPATH="sdks/CSharp/XamarinTestRunner/"
@@ -143,3 +144,4 @@ steps:
     echo === TESTING PF_TEST_TITLE_DATA: $PF_TEST_TITLE_DATA_JSON
     . ./xamarin_buildAppCenterTestAndroid.sh "$XTA" "$PROJECTPATH"
   displayName: 'AppCenter Script' 
+

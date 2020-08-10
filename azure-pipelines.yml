@@ -32,19 +32,19 @@ pool:
 
 steps:
 
-- task: PowerShell@2
-  displayName: "Create folders for repos (workaround)"
-  inputs:
-    targetType: inline
-    script: |
-        New-Item -Path . -Name "JenkinsSdkSetupScripts" -ItemType "directory" # Equals "self"
-        New-Item -Path . -Name "sdks" -ItemType "directory" # Equals "self"
-        New-Item -Path . -Name "SDKGenerator" -ItemType "directory" # Equals "self"
-        New-Item -Path . -Name "API_Specs" -ItemType "directory" # Equals "self"
-        ls
-        cd sdks
-        New-Item -Path . -Name "CSharpSDK" -ItemType "directory" # Equals "self"
-    pwsh: true
+#- task: PowerShell@2
+#  displayName: "Create folders for repos (workaround)"
+#  inputs:
+#    targetType: inline
+#    script: |
+#        New-Item -Path . -Name "JenkinsSdkSetupScripts" -ItemType "directory" # Equals "self"
+#        New-Item -Path . -Name "sdks" -ItemType "directory" # Equals "self"
+#        New-Item -Path . -Name "SDKGenerator" -ItemType "directory" # Equals "self"
+#        New-Item -Path . -Name "API_Specs" -ItemType "directory" # Equals "self"
+#        ls
+#        cd sdks
+#        New-Item -Path . -Name "CSharpSDK" -ItemType "directory" # Equals "self"
+#    pwsh: true
 
 - checkout: self
   clean: true
